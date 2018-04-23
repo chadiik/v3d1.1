@@ -29,6 +29,7 @@ Object.assign(Cik.Quality.prototype, {
 
     PerformanceTest1: function(){
         var quality = 2;
+        // Test webgl supported shader precision, see WebGLRenderer, https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices
         this.OnTestComplete(quality);
     }
 

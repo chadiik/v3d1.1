@@ -1,5 +1,3 @@
-if(typeof V3f === 'undefined') V3f = {};
-if(V3f.UIElements === undefined) V3f.UIElements = {};
 
 V3f.UIElements.InfoBar = function(maxHeight){
 

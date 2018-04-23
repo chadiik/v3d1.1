@@ -8,6 +8,7 @@ V3f.Project.Library = function(){
             Cik.IO.PHPClear(V3d.Ressources.Temp());
             Cik.IO.GetFile(function(file){
                 var fileInfo = Cik.IO.FileInfo(file);
+
                 if(fileInfo.extension !== 'zip'){
                     var abort = true;
                     // var query = 'Textured Library are uploaded as .zip files. Continue anyway?';
@@ -19,17 +20,18 @@ V3f.Project.Library = function(){
                 }
 
                 var extractPath = V3d.Ressources.Temp('archives');
-                Cik.IO.PHPZipExtract(file, extractPath,
+                Cik.IO.PHPZipExtract(file, '../' + extractPath,
                     function(response){
                         if(response === '0'){
                             console.log("error uploading/unzipping archive");
                         }
                         else{
                             try{
-                                console.log(file, 'extracted');
+                                var gltfPath = extractPath + fileInfo.name + '/' + fileInfo.name + '.gltf';
+                                scope.LoadGLTF(gltfPath);
                             }
                             catch(lrlError){
-                                V3f.Feedback.Notify('Layout import failed: ' + lrlError);
+                                V3f.Feedback.Notify('Library import failed: ' + lrlError);
                                 V3f.Feedback.Reload();
                             }
                         }
@@ -49,17 +51,19 @@ Object.assign(V3f.Project.Library.prototype, {
         folder.add(this.controller, 'LoadGLTF');
     },
 
-    LoadGLTF: function(path, onLoad){
-        V3f.Project.Library.LoadGLTF(path, onLoad);
+    LoadGLTF: function(path){
+        V3f.Project.Library.LoadGLTF(path, function(items){
+            console.log(items);
+        });
     }
 });
 
 Object.assign(V3f.Project.Library, {
     
     LoadGLTF: function(path, onLoad){
-        if(V3d.Lib.loadingManager === undefined) V3d.Lib.loadingManager = new THREE.LoadingManager();
+        if(this.loadingManager === undefined) this.loadingManager = new THREE.LoadingManager();
 
-        var loader = new THREE.GLTFLoader(V3d.Lib.loadingManager);
+        var loader = new THREE.GLTFLoader(this.loadingManager);
         try{
             loader.load(path, function (gltf) {
                 V3d.Library.ParseGLTF(gltf, function(items){

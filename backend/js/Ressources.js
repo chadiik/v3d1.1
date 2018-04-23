@@ -20,7 +20,6 @@ V3d.Ressources = {
     LoadJSON: function(url, onLoad){
         var id = App.Loader.LoadScript(url, function(success){
             if(onLoad !== undefined){
-                console.log(url, id);
                 var content = document.getElementById(id).textContent;
                 if(success && content !== undefined) onLoad(JSON.parse(content));
                 else onLoad(false);
@@ -37,7 +36,7 @@ Object.defineProperty(V3d.Ressources, 'config', {
 
 Object.defineProperty(V3d.Ressources, 'temp', {
     get: function(){
-        return '../temp/';
+        return 'temp/';
     }
 });
 

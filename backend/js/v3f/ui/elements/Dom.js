@@ -7,7 +7,7 @@ V3f.UIElements.Dom = function(){
 
 Object.assign(V3f.UIElements.Dom.prototype, {
 
-    AddElement: function(element){
+    Add: function(element){
         this.element.appendChild(element.domElement);
     }
 });

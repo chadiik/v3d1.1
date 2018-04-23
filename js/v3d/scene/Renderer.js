@@ -2,7 +2,6 @@
 V3d.Scene.Renderer = function(params){
 
     this.params = params;
-    console.log(this.params);
     this.renderer = new THREE.WebGLRenderer({antialias: this.params.antialias});
 
     if(this.params.shadows){

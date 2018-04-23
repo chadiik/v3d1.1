@@ -13,14 +13,14 @@ Object.assign(Cik.Config.prototype, {
         args.forEach(key => {
             keys.push(key);
         });
-        console.log('tracking', keys);
     },
 
     Save: function(){
         var data = {};
         var obj = this.target;
         this.keys.forEach(key => {
-            data[key] = Cik.Config.getKey(obj, key);
+            if(key instanceof Cik.Config.Controller) key = key.property;
+            data[key] = Cik.Config.getKey(obj,  key);
         });
         this.data = data;
     },
@@ -41,15 +41,29 @@ Object.assign(Cik.Config.prototype, {
         else if(typeof gui === 'string'){
             if(Cik.Config.mainGui === undefined) Cik.Config.mainGui = new dat.GUI({autoPlace: false});
             gui = Cik.Config.mainGui.addFolder(gui);
-            //Cik.Config.mainGui.close();
+        }
+        else {
+            gui = gui.addFolder(label);
         }
 
         this.keys.forEach(key => {
-            controllers.push(
-                gui.add(
-                    Cik.Config.getOwner(target, key), key
-                ).onChange(guiChanged)
-            );
+            var keyInfo;
+            if(key instanceof Cik.Config.Controller){
+                keyInfo = Cik.Config.KeyInfo(target, key.property);
+                controllers.push(
+                    gui.add(
+                        keyInfo.owner, keyInfo.key, key.min, key.max, key.step
+                    ).onChange(guiChanged)
+                );
+            }
+            else {
+                keyInfo = Cik.Config.KeyInfo(target, key);
+                controllers.push(
+                    gui.add(
+                        keyInfo.owner, keyInfo.key
+                    ).onChange(guiChanged)
+                );
+            }
         });
 
         var scope = this;
@@ -70,8 +84,12 @@ Object.assign(Cik.Config.prototype, {
         return gui;
     },
 
-    Bundle: function(){
-        if(Cik.Config.bundle.indexOf(this) === -1) Cik.Config.bundle.push(this);
+    Bundle: function(id){
+        if(id === undefined) id = 'default';
+        if(Cik.Config.bundles[id] === undefined) Cik.Config.bundles[id] = [];
+
+        var bundle = Cik.Config.bundles[id];
+        if(bundle.indexOf(this) === -1) bundle.push(this);
     },
 
     toJSON: function(){
@@ -82,7 +100,7 @@ Object.assign(Cik.Config.prototype, {
 
 Object.assign(Cik.Config, {
 
-    bundle: [],
+    bundles: {},
 
     SerializeMultiple: function(labelConfigPairs){
         var data = {multiple: true};
@@ -110,10 +128,13 @@ Object.assign(Cik.Config, {
         });
     },
 
-    getOwner: function(obj, key){
+    KeyInfo: function(obj, key){
         key = key.split('.');
         while (key.length > 1) obj = obj[key.shift()];
-        return obj;
+        return {
+            owner: obj,
+            key: key[0]
+        };
     },
 
     getKey: function(obj, key){
@@ -128,3 +149,10 @@ Object.assign(Cik.Config, {
         return obj[key.shift()] = val;
     }
 });
+
+Cik.Config.Controller = function(property, min, max, step){
+    this.property = property;
+    this.min = min;
+    this.max = max;
+    this.step = step;
+};

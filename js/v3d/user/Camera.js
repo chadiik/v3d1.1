@@ -20,6 +20,13 @@ Object.assign(V3d.Camera.prototype, {
         if(this.orbitControls === undefined && container !== undefined){
             this.orbitControls = new THREE.OrbitControls(this.camera, container);
             this.orbitControls.target = new THREE.Vector3();
+            this.orbitControls.Update = function(){
+                if(this.object.position.distanceTo(this.target) < 30){
+                    var v = new THREE.Vector3().subVectors(this.target, this.object.position).multiplyScalar(.2);
+                    this.target.add(v);
+                }
+                this.update();
+            };
         }
         params = {
             maxDistance: 9000.0 * /*units*/1,
@@ -34,10 +41,18 @@ Object.assign(V3d.Camera.prototype, {
         this.controls = this.orbitControls;
     },
 
+    SetTarget: function(position){
+        if(this.controls instanceof THREE.OrbitControls){
+            this.controls.target.copy(position);
+        }
+        else {
+            console.warn('SetTarget not implement for control type:', this.controls);
+        }
+    },
+
     Update: function(){
         if(this.controls !== undefined){
-            if(this.controls.Update !== undefined) this.controls.Update();
-            else this.controls.update();
+            this.controls.Update();
         }
     }
 });

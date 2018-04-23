@@ -23,6 +23,7 @@ Cik.Input = {
         this._mouse = {x:0, y:0};
         this.mouseScreen = new THREE.Vector2();
         this.mouseViewport = new THREE.Vector2();
+        this.mouseDelta = new THREE.Vector2();
         this.lastMouseDownTime = 0;
         this.screen;
         this.ComputeScreen();
@@ -32,7 +33,7 @@ Cik.Input = {
         this.clock = new THREE.Clock();
         this.clock.start();
 
-        this._raycastGroups = {Update:{}, Update25:{}, Update10:{}, OnMouseDown:{}, OnDoubleClick:{}, OnMouseUp:{}, OnRightClick:{}};
+        this._raycastGroups = {Update:{}, Update25:{}, Update10:{}, OnMouseDown:{}, OnDoubleClick:{}, OnMouseUp:{}, OnRightClick:{}, OnClick:{}};
         this.update = [
             {interval:(1/25), last:0, callback: this.Update25.bind(this)},
             {interval:(1/10), last:0, callback: this.Update10.bind(this)}
@@ -44,6 +45,7 @@ Cik.Input = {
         this.onMouseUp = [];
         this.onRightClick = [];
         this.onDoubleClick = [];
+        this.onClick = [];
 
         this.doubleClickTime = .2;
         
@@ -136,6 +138,7 @@ Cik.Input = {
                         scope.onMouseDown[i](mouseEvent);
                     }
                     scope.UpdateRaycast('OnMouseDown');
+                    scope.mouseDelta.copy(this.mouseScreen);
                 }, 
                 this.doubleClickTime * 1000
             );
@@ -171,7 +174,20 @@ Cik.Input = {
             }
 
             this.UpdateRaycast('OnMouseUp');
+            var d = this.mouseDelta.distanceToSquared(this.mouseScreen);
+            var noMouseDrag = d < 10; // pixels squared
+            if(noMouseDrag){
+                this.OnClick(mouseEvent);
+            }
         }
+    },
+
+    OnClick: function(mouseEvent){
+        for(var i = 0; i < this.onClick.length; i++){
+            this.onClick[i](mouseEvent);
+        }
+
+        this.UpdateRaycast('OnClick');
     },
 
     OnRightClick: function(mouseEvent){
@@ -357,10 +373,13 @@ Cik.Input = {
     }
 };
 
+// Cik.Input.RaycastGroup(items, callback, collectionQuery, updateProperty, recursive, continuous)
 Cik.Input.RaycastGroup = function(items, callback, collectionQuery, updateProperty, recursive, continuous){
+    this.enabled = true;
+
     this.items = items;
     this.callback = callback;
-    this.updateProperty = updateProperty;
+    this.updateProperty = updateProperty !== undefined ? updateProperty : false;
     this.recursive = recursive !== undefined ? recursive : false;
     this.continuous = continuous !== undefined ? continuous : false;
 
@@ -405,6 +424,8 @@ Object.assign(Cik.Input.RaycastGroup.prototype, {
     },
 
     Raycast: function(raycaster){
+        if(this.enabled === false) return;
+
         var raycastItems;
         if(this.updateProperty){
             raycastItems = [];

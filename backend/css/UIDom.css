@@ -17,6 +17,18 @@
     display: none !important;
 }
 
+@keyframes wiggle {
+   20% { transform: rotate(5deg); }
+   50% { transform: rotate(0deg); }
+   75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.UIWiggleAnim {
+  display: inline-block;
+  animation: wiggle .15s;
+}
+
 
 /*                                              InfoBar */
 
@@ -61,15 +73,6 @@
     background-color: #0000005f;
 }
 
-/*.UISidebar{
-    font-family: Monospace;
-    float: right;
-    height: calc(100% - 20px);
-    width: 250px;
-    margin: 10px;
-    background-color: #0000005f;
-}*/
-
 .UISidebarHeader{
     color: #ffffff;
     text-align: center;
@@ -92,4 +95,56 @@
     margin-top: 10px !important;
     padding: 2px !important;
     width: calc(100% - 4px);
+}
+
+
+/*                                              Draggable */
+
+.UIDraggable{
+    position: absolute;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;     
+    user-select: none;
+}
+
+.UIDHeader{
+    color: #ffffff;
+    display: inline-block;
+    position: absolute;
+    word-wrap: break-word;
+    min-height: 30px;
+    width:100%;
+
+    font-family: Monospace;
+    /*background-color: rgba(0, 0, 0, .2);*/
+}
+
+.UIDCloseButton{
+    background-color: rgb(19, 19, 19);
+    border: none;
+    color: white;
+    padding: 8px 2px;
+    text-align: center;
+    text-decoration: none;
+    
+    margin-left: -38px;
+    margin-right: 10px;
+
+    font-family: Monospace;
+    font-size: small;
+    cursor: pointer;
+}
+
+
+/*                                              Display */
+
+.UIDisplay{
+    float: right;
+}
+
+.UISceneDisplay{
+    width: 100%;
 }

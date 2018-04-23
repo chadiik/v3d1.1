@@ -1,4 +1,6 @@
 
+js/lib/three/loaders/GLTFLoader.js
+
 js/lib/stats.min.js
 js/lib/dat.gui.js
 js/Ressources.js
@@ -8,9 +10,22 @@ js/v3f/ui/elements/Dom.js
 js/v3f/ui/elements/Element.js
 js/v3f/ui/elements/InfoBar.js
 js/v3f/ui/elements/SideBar.js
+js/v3f/ui/elements/Draggable.js
+js/v3f/ui/elements/display/Display.js
+js/v3f/ui/elements/display/Scene.js
 
 js/v3f/project/Feedback.js
 js/v3f/project/Project.js
 js/v3f/project/ProjectLibrary.js
+
+js/v3f/project/Auto.js
+
+js/v3f/project/smart/Smart.js
+js/v3f/project/smart/Object3D.js
+js/v3f/project/smart/Mesh.js
+js/v3f/project/smart/config/Material.js
+js/v3f/project/smart/config/StandardMaterial.js
+
+js/v3f/library/Library.js
 
 js/Ressources.js

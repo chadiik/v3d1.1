@@ -16,10 +16,12 @@ js/utils/cik/Input.js
 js/utils/cik/Log.js
 js/utils/cik/Quality.js
 js/utils/cik/Utils.js
+js/utils/cik/Utils3D.js
 
 js/v3d/scene/Scene.js
 js/v3d/scene/Common.js
 js/v3d/scene/Controller.js
+js/v3d/scene/Item.js
 js/v3d/scene/Renderer.js
 
 js/v3d/library/Library.js

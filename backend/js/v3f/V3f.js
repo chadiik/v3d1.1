@@ -1,7 +1,7 @@
 if(typeof V3f === 'undefined') V3f = {};
 
 V3f.App = function() {
-    V3f.app = this;
+    V3d.app = this;
 
 	V3f.options = {
 		debug: true
@@ -40,7 +40,7 @@ Object.assign(V3f.App.prototype, {
         };
         Cik.Config.TrackLoadEdit('camera', cameraController.camera, guiChanged, 'fov');
 
-        var setupParams = {stats: true};
+        var setupParams = {input: true, stats: true, sky: true, config: true};
         V3d.Scene.DefaultSetup(container, sceneController, sceneRenderer, cameraController, setupParams);
 
         var scope = this;
@@ -64,6 +64,7 @@ Object.assign(V3f.App.prototype, {
     ProjectSetup: function(){
         this.project = new V3f.Project();
         this.project.GUI(this.container.parentElement);
-        //this.container.parentElement.appendChild(this.project.ui.dom.element);
+        
+        V3f.Auto.LoadGLTF('First');
     }
 });
