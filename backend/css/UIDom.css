@@ -29,6 +29,11 @@
   animation: wiggle .15s;
 }
 
+.datDisabled {
+    color: #606060 !important;
+    cursor: not-allowed !important;
+}
+
 
 /*                                              InfoBar */
 

@@ -59,13 +59,13 @@ V3f.UIElements.Scene.prototype = Object.assign(Object.create(V3f.UIElements.Disp
     constructor: V3f.UIElements.Scene,
 
     Reset: function(){
-        var parent = this.sceneController.defaults;
+        var parent = this.sceneController.miscContainer;
         parent.children.forEach(child => {
             parent.remove(child);
         });
     },
 
     Add: function(object){
-        this.sceneController.AddDefault(object);
+        this.sceneController.Add(object);
     }
 });

@@ -15,7 +15,7 @@ V3f.Smart = function(target, label){
 
     var ui = V3f.MainUI.instance;
     ui.Add(this.draggable);
-    this.Hide();
+    this.draggable.Hide();
 };
 
 Object.assign(V3f.Smart.prototype, {
@@ -40,10 +40,9 @@ Object.assign(V3f.Smart.prototype, {
     },
     
     Config: function(folderName, target, guiChanged, ...args){
-        var config = new Cik.Config(target);
-        config.Track(...args);
-        var gui = config.Edit(guiChanged, folderName, this.gui, {save: false});
-        return config;
+        this.config = new Cik.Config(target);
+        this.config.Track(...args);
+        this.config.Edit(guiChanged, folderName, this.gui, {save: false});
     }
 });
 

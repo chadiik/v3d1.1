@@ -46,7 +46,8 @@ Object.defineProperty(V3d.Ressources, 'temp', {
 Cik.Config.TrackLoadEdit = function(label, target, guiChanged, ...args){
     var config = new Cik.Config(target);
     config.Track(...args);
-    var gui = config.Edit(guiChanged, label, label);
+    config.Edit(guiChanged, label, label);
+    var gui = config.gui;
     V3d.Ressources.LoadJSON(V3d.Ressources.Config(label + (label.indexOf('.json') === -1 ? '.json' : '')), function(result){
         if(result !== false) Cik.Config.Load(target, result);
         for (var i in gui.__controllers) {

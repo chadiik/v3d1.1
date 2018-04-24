@@ -3,7 +3,10 @@ js/lib/three/loaders/GLTFLoader.js
 
 js/lib/stats.min.js
 js/lib/dat.gui.js
+js/lib/object_hash.js
 js/Ressources.js
+
+js/v3f/ui/datGUIExtensions.js
 
 js/v3f/ui/MainUI.js
 js/v3f/ui/elements/Dom.js
@@ -17,6 +20,10 @@ js/v3f/ui/elements/display/Scene.js
 js/v3f/project/Feedback.js
 js/v3f/project/Project.js
 js/v3f/project/ProjectLibrary.js
+
+js/v3f/project/operation/Operation.js
+js/v3f/project/operation/Object.js
+js/v3f/project/operation/Sequence.js
 
 js/v3f/project/Auto.js
 

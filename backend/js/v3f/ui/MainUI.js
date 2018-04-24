@@ -17,10 +17,15 @@ V3f.MainUI = function(container){
     this.datGUI = new dat.GUI({
         autoPlace: false
     });
+    
+    // Title
+    this.sideBar.AddTitle('V3f');
+
+    // Display
     this.sceneDisplay = new V3f.UIElements.Scene();
     this.sideBar.Add(this.sceneDisplay.domElement);
-    //this.sceneDisplay.sceneRenderer.ResizeDomElement({width: 250, height: 250});
-    this.sideBar.AddTitle('V3f');
+
+    // GUI 1
     this.sideBar.Add(this.datGUI.domElement);
 };
 

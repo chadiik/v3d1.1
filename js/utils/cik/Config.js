@@ -81,7 +81,7 @@ Object.assign(Cik.Config.prototype, {
         if(params.save) gui.add(editor, 'Save');
         if(params.debug) gui.add(editor, 'Debug');
 
-        return gui;
+        this.gui = gui;
     },
 
     Bundle: function(id){
