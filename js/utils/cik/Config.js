@@ -46,23 +46,29 @@ Object.assign(Cik.Config.prototype, {
             gui = gui.addFolder(label);
         }
 
+        if(this.editing === undefined) this.editing = {};
+
         this.keys.forEach(key => {
-            var keyInfo;
-            if(key instanceof Cik.Config.Controller){
-                keyInfo = Cik.Config.KeyInfo(target, key.property);
+            var isController = key instanceof Cik.Config.Controller;
+            var keyInfo = Cik.Config.KeyInfo(target, isController ? key.property : key);
+            if(this.editing[keyInfo.key] !== true){
+                var addFunction = keyInfo.key === 'color' ? gui.addColor : gui.add;
                 controllers.push(
-                    gui.add(
-                        keyInfo.owner, keyInfo.key, key.min, key.max, key.step
-                    ).onChange(guiChanged)
+                    ( isController && key.min !== undefined ? 
+                        addFunction.call(gui, 
+                            keyInfo.owner, keyInfo.key, key.min, key.max, key.step
+                        ) :
+                        addFunction.call(gui, 
+                            keyInfo.owner, keyInfo.key
+                        )
+                    ) .onChange(key.onChange === undefined ? guiChanged : 
+                        (function(){
+                            key.onChange();
+                            guiChanged();
+                        })
+                    )
                 );
-            }
-            else {
-                keyInfo = Cik.Config.KeyInfo(target, key);
-                controllers.push(
-                    gui.add(
-                        keyInfo.owner, keyInfo.key
-                    ).onChange(guiChanged)
-                );
+                this.editing[keyInfo.key] = true;
             }
         });
 
@@ -78,8 +84,20 @@ Object.assign(Cik.Config.prototype, {
                 console.log(scope);
             }
         }
-        if(params.save) gui.add(editor, 'Save');
-        if(params.debug) gui.add(editor, 'Debug');
+        if(params.save){
+            if(this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
+            if(this.editing['editor.Save'] !== true){
+                this.defaultsFolder.add(editor, 'Save');
+                this.editing['editor.Save'] = true;
+            }
+        }
+        if(params.debug){
+            if(this.defaultsFolder === undefined) this.defaultsFolder = gui.addFolder('...');
+            if(this.editing['editor.Debug'] !== true){
+                this.defaultsFolder.add(editor, 'Debug');
+                this.editing['editor.Debug'] = true;
+            }
+        }
 
         this.gui = gui;
     },
@@ -150,9 +168,10 @@ Object.assign(Cik.Config, {
     }
 });
 
-Cik.Config.Controller = function(property, min, max, step){
+Cik.Config.Controller = function(property, min, max, step, onChange){
     this.property = property;
     this.min = min;
     this.max = max;
     this.step = step;
+    this.onChange = onChange;
 };

@@ -63,8 +63,12 @@ Object.assign(V3f.App.prototype, {
 
     ProjectSetup: function(){
         this.project = new V3f.Project();
+        //this.project.New();
         this.project.GUI(this.container.parentElement);
         
-        V3f.Auto.LoadGLTF('First');
+        Cik.Input.ListenKeys(['a', 'ctrl']);
+        //V3f.Auto.LoadGLTF('First');
+
+        //this.project.projectElements.AddLight();
     }
 });

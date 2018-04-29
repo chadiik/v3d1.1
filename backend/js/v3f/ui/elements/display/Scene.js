@@ -30,7 +30,7 @@ V3f.UIElements.Scene = function(params){
     var setHeight = function(){
         var style = window.getComputedStyle(sceneRenderer.renderer.domElement),
             width = parseFloat(style.width);
-        console.log(sceneRenderer.renderer.domElement, width);
+            
         var screen = {width: width, height: (width * .8)};
         sceneRenderer.ReconfigureViewport(screen);
 
@@ -67,5 +67,31 @@ V3f.UIElements.Scene.prototype = Object.assign(Object.create(V3f.UIElements.Disp
 
     Add: function(object){
         this.sceneController.Add(object);
+    }
+});
+
+Object.defineProperties(V3f.UIElements.Display.prototype, {
+    fullscreen: {
+        set: function(value){
+            if(value){
+                this.domParent = this.domElement.parentNode;
+                this.domIndex = Array.prototype.slice.call(this.domParent.children).indexOf(this.domElement);
+
+                this.domElement.classList.add('UIDisplayFull');
+                document.body.appendChild(this.domElement);
+            }
+            else{
+                this.domElement.classList.remove('UIDisplayFull');
+                this.domParent.children[this.domIndex].insertAdjacentElement('beforebegin', this.domElement);
+            }
+
+            var style = window.getComputedStyle(this.domElement),
+                width = parseFloat(style.width);
+            var screen = {
+                width: width,
+                height: width * .8
+            };
+            this.sceneRenderer.ReconfigureViewport(screen);
+        }
     }
 });

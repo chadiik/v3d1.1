@@ -78,7 +78,7 @@ Cik.Input = {
         }
     },
 
-    defaultKeysListen: 'abcdefghijklmnopqrtsuvwxyz'.split(''),
+    defaultKeysListen: 'abcdefghijklmnopqrtsuvwxyz'.split('').concat(['ctlr', 'shift', 'alt']),
 
     ListenKeys: function(keys){
         if(keys === undefined) {
@@ -349,6 +349,7 @@ Cik.Input = {
     },
 
     AddRaycastGroup: function(event, groupID, group){
+        if(this._raycastGroups[event][groupID] !== undefined) console.log('RaycastGroup ' + groupID + ' is being overwritten.');
         this._raycastGroups[event][groupID] = group;
     },
 

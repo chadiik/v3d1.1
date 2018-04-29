@@ -16,6 +16,9 @@ V3f.Smart = function(target, label){
     var ui = V3f.MainUI.instance;
     ui.Add(this.draggable);
     this.draggable.Hide();
+
+    this.onFocus = [];
+    this.onFocusLost = [];
 };
 
 Object.assign(V3f.Smart.prototype, {
@@ -60,6 +63,9 @@ Object.assign(V3f.Smart, {
             for(iFocus = 0; iFocus < this.onFocusLost.length; iFocus++){
                 this.onFocusLost[iFocus](this.current);
             }
+            for(iFocus = 0; iFocus < this.current.onFocusLost.length; iFocus++){
+                this.current.onFocusLost[iFocus]();
+            }
         }
 
         this.current = current;
@@ -67,6 +73,9 @@ Object.assign(V3f.Smart, {
         if(this.current !== undefined){
             for(iFocus = 0; iFocus < this.onFocus.length; iFocus++){
                 this.onFocus[iFocus](this.current);
+            }
+            for(iFocus = 0; iFocus < this.current.onFocus.length; iFocus++){
+                this.current.onFocus[iFocus]();
             }
         }
     }

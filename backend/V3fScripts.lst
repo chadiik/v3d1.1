@@ -1,5 +1,7 @@
 
 js/lib/three/loaders/GLTFLoader.js
+js/lib/three/controls/TransformControls.js
+js/lib/three/BufferGeometryUtils.js
 
 js/lib/stats.min.js
 js/lib/dat.gui.js
@@ -9,6 +11,7 @@ js/Ressources.js
 js/v3f/ui/datGUIExtensions.js
 
 js/v3f/ui/MainUI.js
+js/v3f/ui/Control3D.js
 js/v3f/ui/elements/Dom.js
 js/v3f/ui/elements/Element.js
 js/v3f/ui/elements/InfoBar.js
@@ -19,7 +22,10 @@ js/v3f/ui/elements/display/Scene.js
 
 js/v3f/project/Feedback.js
 js/v3f/project/Project.js
+js/v3f/project/ProjectController.js
 js/v3f/project/ProjectLibrary.js
+js/v3f/project/ProjectLibraryController.js
+js/v3f/project/ProjectElements.js
 
 js/v3f/project/operation/Operation.js
 js/v3f/project/operation/Object.js
@@ -27,12 +33,24 @@ js/v3f/project/operation/Sequence.js
 
 js/v3f/project/Auto.js
 
+js/v3f/project/import/Imported.js
+js/v3f/project/import/Item.js
+
 js/v3f/project/smart/Smart.js
 js/v3f/project/smart/Object3D.js
 js/v3f/project/smart/Mesh.js
+js/v3f/project/smart/PointLight.js
+js/v3f/project/smart/Asset.js
 js/v3f/project/smart/config/Material.js
 js/v3f/project/smart/config/StandardMaterial.js
 
+js/v3f/sov/SOV.js
+js/v3f/sov/Records.js
+
 js/v3f/library/Library.js
+js/v3f/library/assets/Asset.js
+js/v3f/library/assets/Light.js
+
+js/v3f/scene/ControlGroup.js
 
 js/Ressources.js

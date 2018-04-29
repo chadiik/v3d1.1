@@ -1,3 +1,4 @@
+console.log('TODO: toneMapping, whitePoint, etc', 'inlined tone mapping: https://threejs.org/examples/webgl_tonemapping.html');
 
 V3d.Scene.Renderer = function(params){
 
@@ -15,7 +16,7 @@ V3d.Scene.Renderer = function(params){
     this.renderer.gammaOutput = true;
     this.renderer.toneMapping = THREE.Uncharted2ToneMapping;
     this.renderer.toneMappingExposure = 1.4;
-
+    
     this.maxTextureSize = this.renderer.context.getParameter(this.renderer.context.MAX_TEXTURE_SIZE);
     this.pixelRatio = window.devicePixelRatio !== undefined ? window.devicePixelRatio : 1;
     this.renderer.setPixelRatio(this.pixelRatio);

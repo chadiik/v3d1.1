@@ -28,6 +28,9 @@ Object.assign(V3d.Scene.Controller.prototype, {
         if(object instanceof V3d.Scene.Item){
             this.itemsContainer.add(object);
         }
+        else if(object instanceof V3d.Library.Light){
+            this.ambientContainer.add(object.lightObject);
+        }
         else {
             this.miscContainer.add(object);
         }

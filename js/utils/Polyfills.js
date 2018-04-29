@@ -33,3 +33,12 @@ if (!String.prototype.padStart) {
   
     window.CustomEvent = CustomEvent;
 })();
+
+// 'hello {1}'.format('world');
+String.prototype.format = function () {
+    var str = this;
+    for ( var i = 0; i < arguments.length; i ++ ) {
+        str = str.replace( '{' + i + '}', arguments[ i ] );
+    }
+    return str;
+};

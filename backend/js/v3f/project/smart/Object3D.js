@@ -4,7 +4,11 @@ V3f.Smart.Object3D = function(object, label){
     V3f.Smart.call(this, object, label);
     object.smart = this;
 
-    this.Config('Object3D', this, this.OnGuiChanged.bind(this), 'Back', 'ConfigParent', 'target.position.x', 'target.position.y', 'target.position.z');
+    if(object.asset){
+        var assetConfig = object.asset.GetSmartParams();
+        this.Config(...assetConfig);
+    }
+    this.Config('Object3D', this, this.OnGuiChanged.bind(this), 'Back', 'ConfigParent', 'target.visible');
 };
 
 V3f.Smart.Object3D.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
@@ -16,6 +20,7 @@ V3f.Smart.Object3D.prototype = Object.assign(Object.create(V3f.Smart.prototype),
 
     Show: function(){
         this.gui.__folders.Object3D.enable(this, 'Back', this.backtrack !== undefined);
+        this.gui.setTooltip(this.target, 'visible', 'Go back once and something longer.');
         
         V3f.Smart.prototype.Show.call(this);
     },
@@ -23,7 +28,6 @@ V3f.Smart.Object3D.prototype = Object.assign(Object.create(V3f.Smart.prototype),
     ConfigParent: function(){
         var ui = V3f.MainUI.instance;
         var parent = this.target.parent;
-        console.log('config parent', parent);
         if(parent){
             if(parent.smart === undefined) parent.smart = new V3f.Smart.Object3D(parent);
             parent.smart.backtrack = this;

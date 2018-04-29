@@ -1,48 +1,15 @@
 
-V3f.Project.Library = function(){
-    this.library = new V3d.Library();
+V3f.Project.Library = function(library){
+
+    if(library === undefined) library = new V3d.Library();
+    this.library = library;
 
     var scope = this;
     this.controller = {
-        LoadGLTF: function(){
-            Cik.IO.PHPClear(V3d.Ressources.Temp());
-            Cik.IO.GetFile(function(file){
-                var fileInfo = Cik.IO.FileInfo(file);
-
-                if(fileInfo.extension !== 'zip'){
-                    var abort = true;
-                    // var query = 'Textured Library are uploaded as .zip files. Continue anyway?';
-                    var query = 'Zipped GLTF assets only. Continue anyway?';
-                    V3f.Feedback.Confirm(query, function(){abort = false;});
-                    if(abort){
-                        return;
-                    }
-                }
-
-                var extractPath = V3d.Ressources.Temp('archives');
-                Cik.IO.PHPZipExtract(file, '../' + extractPath,
-                    function(response){
-                        if(response === '0'){
-                            console.log("error uploading/unzipping archive");
-                        }
-                        else{
-                            try{
-                                var gltfPath = extractPath + fileInfo.name + '/' + fileInfo.name + '.gltf';
-                                scope.LoadGLTF(gltfPath);
-                            }
-                            catch(lrlError){
-                                V3f.Feedback.Notify('Library import failed: ' + lrlError);
-                                V3f.Feedback.Reload();
-                            }
-                        }
-                    },
-                    function(response){
-                        console.log(response);
-                    }
-                );
-            });
-        }
+        LoadGLTF: V3f.Project.Library.Controller.LoadGLTF
     };
+
+    V3f.Project.Library.onItemsLoaded.push(this.AddImportedItems.bind(this));
 };
 
 Object.assign(V3f.Project.Library.prototype, {
@@ -51,29 +18,69 @@ Object.assign(V3f.Project.Library.prototype, {
         folder.add(this.controller, 'LoadGLTF');
     },
 
-    LoadGLTF: function(path){
-        V3f.Project.Library.LoadGLTF(path, function(items){
-            console.log(items);
+    AddImportedItems: function(items){
+        
+        items.forEach(item => {
+            var item = this.library.Add(item.sov, item.obj);
         });
+
+        this.TestLibrary();
+    },
+
+    TestLibrary: function(){
+        var jsonString = JSON.stringify(this.library);
+        var jsonData = JSON.parse(jsonString);
+        console.log(jsonData);
+
+        var libItems = Object.values(this.library.items);
+        var objects = [];
+        libItems.forEach(function(libItem){
+            objects.push(libItem.asset.view);
+        });
+
+        V3f.Auto.SmartDisplay(objects);
+    },
+
+    toJSON: function(){
+        return {
+            library: this.library
+        };
     }
 });
 
 Object.assign(V3f.Project.Library, {
+
+    onItemsLoaded: [],
+    NotifyItemsLoaded: function(items){
+        var callbacks = V3f.Project.Library.onItemsLoaded;
+        for(var i = 0; i < callbacks.length; i++){
+            callbacks[i](items);
+        }
+    },
     
-    LoadGLTF: function(path, onLoad){
+    LoadGLTFFile: function(path){
         if(this.loadingManager === undefined) this.loadingManager = new THREE.LoadingManager();
 
         var loader = new THREE.GLTFLoader(this.loadingManager);
         try{
-            loader.load(path, function (gltf) {
-                V3d.Library.ParseGLTF(gltf, function(items){
-                    if(onLoad !== undefined) onLoad(items);
-                });
-            });
+            loader.load(path, this.LoadGLTF);
         }
         catch(error){
             console.trace(error);
             V3f.Feedback.Notify(error);
         }
+    },
+
+    LoadGLTF: function(gltf){
+        var imported = new V3f.Project.Imported(gltf.scene);
+        imported.Parse(V3f.Project.Library.NotifyItemsLoaded);
+    },
+
+    FromJSON: function(data){
+        var library = V3d.Library.FromJSON(data.library);
+        var projectLibrary = new V3f.Project.Library(library);
+        projectLibrary.TestLibrary();
+
+        return projectLibrary;
     }
 });

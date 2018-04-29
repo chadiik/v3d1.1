@@ -45,10 +45,14 @@ Object.assign(V3f.MainUI.prototype, {
         var sceneDisplay = this.sceneDisplay;
         sceneDisplay.Reset();
         sceneDisplay.Show();
+        var box3 = new THREE.Box3(), vec3 = new THREE.Vector3();
         args.forEach(arg => {
             var object = arg.clone();
             object.applyMatrix(arg.matrixWorld);
-            object.position.set(0, 0, 0);
+
+            box3.setFromObject(object);
+            box3.getSize(vec3);
+            object.position.set(0, vec3.y * .5, 0);
             sceneDisplay.Add(object);
 
             object.updateMatrixWorld(true);
