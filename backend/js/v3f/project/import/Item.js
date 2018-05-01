@@ -37,7 +37,9 @@ Object.assign(V3f.Project.Imported.Item.prototype, {
                 this.creationLog.originalCallsNum++;
 
                 var merge = [this.materialsMap[materialUUID].geometry, mesh.geometry];
-                this.materialsMap[materialUUID].geometry = THREE.BufferGeometryUtils.mergeBufferGeometries(merge);
+                var mergeOp = THREE.BufferGeometryUtils.mergeBufferGeometries(merge);
+                if(mergeOp !== null) this.materialsMap[materialUUID].geometry = mergeOp;
+                else console.log('merge error:' + this.sov.ToString(), merge, mergeOp);
             }
         }
         else{

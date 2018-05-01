@@ -131,7 +131,13 @@ Object.assign(V3f.Project.Imported, {
 
                         var sovMesh = new THREE.Mesh(snapshot, child.material);
                         sovMesh.name += '_' + item.target.name;
-                        item.AppendMesh(sovMesh);
+                        try{
+                            item.AppendMesh(sovMesh);
+                        }
+                        catch(error){
+                            console.log('*** AppendMesh error on', child, 'child of', obj);
+                            console.log('\t', item.sov.ToString());
+                        }
                     }
                 }
             });
@@ -142,6 +148,8 @@ Object.assign(V3f.Project.Imported, {
 
         view.traverse(function(child){
             if(child instanceof THREE.Mesh){
+                child.castShadow = child.receiveShadow = true;
+
                 var material = child.material;
                 V3f.Project.Imported.ConvertMaterial(material);
             }

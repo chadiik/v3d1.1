@@ -23,7 +23,7 @@ V3f.UIElements.Scene = function(params){
     cameraController.OrbitControls(this.domElement);
     this.cameraController = cameraController;
 
-    var setupParams = {input: false, stats: false, sky: false, config: false};
+    var setupParams = {input: false, stats: false, sky: false, config: false, fillLights: true};
     V3d.Scene.DefaultSetup(this.domElement, sceneController, sceneRenderer, cameraController, setupParams);
 
     sceneRenderer.renderer.domElement.classList.add('UISceneDisplay');

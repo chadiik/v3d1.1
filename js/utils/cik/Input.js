@@ -138,7 +138,7 @@ Cik.Input = {
                         scope.onMouseDown[i](mouseEvent);
                     }
                     scope.UpdateRaycast('OnMouseDown');
-                    scope.mouseDelta.copy(this.mouseScreen);
+                    scope.mouseDelta.copy(scope.mouseScreen);
                 }, 
                 this.doubleClickTime * 1000
             );
@@ -366,6 +366,7 @@ Cik.Input = {
         var raycastGroupsKeys = Object.keys(this._raycastGroups[event]);
         var numRaycastGroups = raycastGroupsKeys.length;
         if(numRaycastGroups > 0){
+            raycastGroupsKeys.sort().reverse();
             for(var iGroup = 0; iGroup < numRaycastGroups; iGroup++){
                 var key = raycastGroupsKeys[iGroup];
                 this._raycastGroups[event][key].Raycast(this.raycaster);

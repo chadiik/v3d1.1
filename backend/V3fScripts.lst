@@ -23,6 +23,8 @@ js/v3f/ui/elements/display/Scene.js
 js/v3f/project/Feedback.js
 js/v3f/project/Project.js
 js/v3f/project/ProjectController.js
+js/v3f/project/ProjectModel.js
+js/v3f/project/ProjectModelController.js
 js/v3f/project/ProjectLibrary.js
 js/v3f/project/ProjectLibraryController.js
 js/v3f/project/ProjectElements.js
@@ -39,6 +41,7 @@ js/v3f/project/import/Item.js
 js/v3f/project/smart/Smart.js
 js/v3f/project/smart/Object3D.js
 js/v3f/project/smart/Mesh.js
+js/v3f/project/smart/Light.js
 js/v3f/project/smart/PointLight.js
 js/v3f/project/smart/Asset.js
 js/v3f/project/smart/config/Material.js
@@ -51,6 +54,12 @@ js/v3f/library/Library.js
 js/v3f/library/assets/Asset.js
 js/v3f/library/assets/Light.js
 
+js/v3f/model/Model.js
+js/v3f/model/Section.js
+js/v3f/model/Layout.js
+js/v3f/model/Scene.js
+
 js/v3f/scene/ControlGroup.js
+js/v3f/scene/Scene.js
 
 js/Ressources.js

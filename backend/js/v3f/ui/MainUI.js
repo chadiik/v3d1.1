@@ -47,18 +47,23 @@ Object.assign(V3f.MainUI.prototype, {
         sceneDisplay.Show();
         var box3 = new THREE.Box3(), vec3 = new THREE.Vector3();
         args.forEach(arg => {
-            var object = arg.clone();
-            object.applyMatrix(arg.matrixWorld);
+            try{
+                var object = arg.clone();
+                object.applyMatrix(arg.matrixWorld);
 
-            box3.setFromObject(object);
-            box3.getSize(vec3);
-            object.position.set(0, vec3.y * .5, 0);
-            sceneDisplay.Add(object);
+                box3.setFromObject(object);
+                box3.getSize(vec3);
+                object.position.set(0, vec3.y * .5, 0);
+                sceneDisplay.Add(object);
 
-            object.updateMatrixWorld(true);
-            var frame = Cik.Utils3D.FrameCamera(sceneDisplay.cameraController.camera, object);
-            sceneDisplay.cameraController.position.copy(frame.position);
-            sceneDisplay.cameraController.SetTarget(frame.target);
+                object.updateMatrixWorld(true);
+                var frame = Cik.Utils3D.FrameCamera(sceneDisplay.cameraController.camera, object);
+                sceneDisplay.cameraController.position.copy(frame.position);
+                sceneDisplay.cameraController.SetTarget(frame.target);
+            }
+            catch(error){
+                console.log('error in display: ', error);
+            }
         });
     },
 

@@ -1,5 +1,7 @@
 
 V3d.Library = function(){
+    V3d.Library.instances.push(this);
+
     this.items = {};
 };
 
@@ -24,9 +26,19 @@ Object.assign(V3d.Library.prototype, {
         var item = this.items[sov];
         return item;
     },
+
+    RequestView: function(sov){
+        var item = this.Request(sov);
+        var view = item.asset.view;
+        return view;
+    }
 });
 
 Object.assign(V3d.Library, {
+
+    instances: [],
+
+    loader: new THREE.ObjectLoader(),
     
     FromJSON: function(data){
         var library = new V3d.Library();
@@ -37,6 +49,15 @@ Object.assign(V3d.Library, {
             var item = library.Add(sov, view);
         });
         return library;
+    },
+
+    RequestView: function(sov){
+
+        for(var i = 0; i < this.instances.length; i++){
+            var view = this.instances[i].RequestView(sov);
+            if(view) return view;
+        };
+        return undefined;
     }
     
 });

@@ -4,8 +4,14 @@ V3f.Project.Elements = function(){
 
     var scope = this;
     this.controller = {
-        AddLight: function(){
-            scope.AddLight();
+        AddPointLight: function(){
+            var light = new V3d.Library.Light(V3f.Project.Elements.CreateLightObject('point'));
+            scope.AddLight(light);
+        },
+
+        AddAmbientLight: function(){
+            var light = new V3d.Library.Light(V3f.Project.Elements.CreateLightObject('ambient'));
+            scope.AddLight(light);
         }
     };
 };
@@ -13,25 +19,57 @@ V3f.Project.Elements = function(){
 Object.assign(V3f.Project.Elements.prototype, {
 
     GUI: function(folder){
-        folder.add(this.controller, 'AddLight');
+        var lightsFolder = folder.addFolder('Lights');
+        lightsFolder.open();
+        lightsFolder.add(this.controller, 'AddAmbientLight');
+        lightsFolder.add(this.controller, 'AddPointLight');
     },
 
-    AddLight: function(){
+    AddLight: function(light){
         var sceneController = V3d.app.sceneController;
 
-        var lightObject = V3f.Project.Elements.CreateLight();
-        var light = new V3d.Library.Light(lightObject);
         sceneController.Add(light);
+    },
+
+    toJSON: function(){
+        var lights = V3d.Library.Light.instances;
+        return {
+            lights: lights
+        };
     }
 });
 
 Object.assign(V3f.Project.Elements, {
 
-    CreateLight: function(){
-        if(this.lightInstance === undefined || this.lightInstance.parent !== null) {
-            this.lightInstance = new THREE.PointLight();
-        }
+    lightsFactory: (function(){
+        var factory = new Object();
+        Object.defineProperties(factory, {
+            ambient:{
+                get: function(){
+                    return new THREE.AmbientLight();
+                }
+            },
+            point: {
+                get: function(){
+                    return new THREE.PointLight();
+                }
+            }
+        });
+        return factory;
+    })(),
 
-        return this.lightInstance;
+    CreateLightObject: function(type){
+        return V3f.Project.Elements.lightsFactory[type];
+    },
+
+    FromJSON: function(data){
+        var projectElements = new V3f.Project.Elements();
+        var lights = data.lights;
+        lights.forEach(light => {
+            var light = V3d.Library.Light.FromJSON(light);
+            projectElements.AddLight(light);
+        });
+
+        return projectElements;
     }
 });

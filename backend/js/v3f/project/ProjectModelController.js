@@ -1,13 +1,13 @@
 
-V3f.Project.Library.Controller = {
-    LoadGLTF: function(){
+V3f.Project.Model.Controller = {
+
+    LoadLayout: function(){
         Cik.IO.PHPClear(V3d.Ressources.Temp('archives'));
         Cik.IO.GetFile(function(file){
             var fileInfo = Cik.IO.FileInfo(file);
 
             if(fileInfo.extension !== 'zip'){
                 var abort = true;
-                // var query = 'Textured Library are uploaded as .zip files. Continue anyway?';
                 var query = 'Zipped GLTF assets only. Continue anyway?';
                 V3f.Feedback.Confirm(query, function(){abort = false;});
                 if(abort){
@@ -24,10 +24,10 @@ V3f.Project.Library.Controller = {
                     else{
                         try{
                             var gltfPath = extractPath + fileInfo.name + '/' + fileInfo.name + '.gltf';
-                            V3f.Project.Library.LoadGLTFFile(gltfPath);
+                            V3f.Project.Model.LoadGLTFFile(gltfPath);
                         }
                         catch(lrlError){
-                            V3f.Feedback.Notify('Library import failed: ' + lrlError);
+                            V3f.Feedback.Notify('Layout import failed: ' + lrlError);
                             V3f.Feedback.Reload();
                         }
                     }

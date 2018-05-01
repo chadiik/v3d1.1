@@ -4,7 +4,6 @@ V3f.Project.Library = function(library){
     if(library === undefined) library = new V3d.Library();
     this.library = library;
 
-    var scope = this;
     this.controller = {
         LoadGLTF: V3f.Project.Library.Controller.LoadGLTF
     };
@@ -24,13 +23,12 @@ Object.assign(V3f.Project.Library.prototype, {
             var item = this.library.Add(item.sov, item.obj);
         });
 
-        this.TestLibrary();
+        //this.TestLibrary();
     },
 
     TestLibrary: function(){
-        var jsonString = JSON.stringify(this.library);
-        var jsonData = JSON.parse(jsonString);
-        console.log(jsonData);
+        //var jsonString = JSON.stringify(this.library);
+        //var jsonData = JSON.parse(jsonString);
 
         var libItems = Object.values(this.library.items);
         var objects = [];
@@ -79,7 +77,7 @@ Object.assign(V3f.Project.Library, {
     FromJSON: function(data){
         var library = V3d.Library.FromJSON(data.library);
         var projectLibrary = new V3f.Project.Library(library);
-        projectLibrary.TestLibrary();
+        //projectLibrary.TestLibrary();
 
         return projectLibrary;
     }

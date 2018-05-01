@@ -17,9 +17,26 @@ V3f.Auto = {
         return V3d.app.sceneController;
     },
     
-    LoadGLTF: function(nameOnly){
+    LoadLibrary: function(nameOnly){
         var gltfPath = V3d.Ressources.Temp('archives') + nameOnly + '/' + nameOnly + '.gltf';
         V3f.Project.Library.LoadGLTFFile(gltfPath);
+    },
+
+    LoadLayout: function(nameOnly){
+        var gltfPath = V3d.Ressources.Temp('archives') + nameOnly + '/' + nameOnly + '.gltf';
+        V3f.Project.Model.LoadGLTFFile(gltfPath);
+    },
+
+    FileAsArrayBuffer: function(path, onLoad){
+        var loader = new THREE.FileLoader();
+        loader.setResponseType('arraybuffer');
+        loader.load(path, onLoad);
+    },
+
+    LoadProject: function(path){
+        this.FileAsArrayBuffer(path, function(file){
+            V3f.Project.LoadProjectFile(file, path);
+        });
     },
 
     smartGroupCount: 0,

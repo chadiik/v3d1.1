@@ -4,7 +4,12 @@ V3f.Smart.Asset = function(object, label){
     V3f.Smart.call(this, object, label);
     object.smart = this;
 
-    this.Config('Asset', this, this.OnGuiChanged.bind(this), 'Log');
+    var c = Cik.Config.Controller; //(property, min, max, step, onChange)
+    var track = [
+        'ConfigView',
+        'Log'
+    ];
+    this.Config('Asset', this, this.OnGuiChanged.bind(this), ...track);
 };
 
 V3f.Smart.Asset.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
@@ -12,6 +17,12 @@ V3f.Smart.Asset.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
 
     OnGuiChanged: function(){
 
+    },
+
+    ConfigView: function(){
+        if(this.target.view !== undefined && this.target.view.smart){
+            this.target.view.smart.Show();
+        }
     },
 
     Log: function(){

@@ -17,6 +17,7 @@ js/utils/cik/Log.js
 js/utils/cik/Quality.js
 js/utils/cik/Utils.js
 js/utils/cik/Utils3D.js
+js/utils/cik/Factory.js
 
 js/v3d/sov/SOV.js
 js/v3d/sov/Records.js
@@ -25,6 +26,11 @@ js/v3d/library/Library.js
 js/v3d/library/Item.js
 js/v3d/library/assets/Asset.js
 js/v3d/library/assets/Light.js
+
+js/v3d/model/Model.js
+js/v3d/model/Section.js
+js/v3d/model/Layout.js
+js/v3d/model/Scene.js
 
 js/v3d/scene/Scene.js
 js/v3d/scene/Common.js

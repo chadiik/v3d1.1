@@ -19,7 +19,9 @@ Object.assign(V3d.Scene, {
         cameraController.position.z = 40 * units;
 
         // Fill lights
-        this.DefaultLights(sceneController);
+        if(setupParams.fillLights){
+            this.DefaultLights(sceneController);
+        }
 
         // Env
         var gridHelper = new THREE.GridHelper(200 * units, 20);

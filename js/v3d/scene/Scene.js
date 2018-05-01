@@ -13,6 +13,12 @@ V3d.Scene.TRS = function(position, rotation){
 
 Object.assign(V3d.Scene.TRS.prototype, {
 
+    FromObject: function(object){
+        this.position.copy(object.position);
+        this.rotation.copy(object.rotation);
+        return this;
+    },
+
     // Deep clone of TRS
     Clone: function(){
         return new V3d.Scene.TRS(this.position.clone(), this.rotation.clone());

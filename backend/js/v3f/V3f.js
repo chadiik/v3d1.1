@@ -43,6 +43,7 @@ Object.assign(V3f.App.prototype, {
         var setupParams = {input: true, stats: true, sky: true, config: true};
         V3d.Scene.DefaultSetup(container, sceneController, sceneRenderer, cameraController, setupParams);
 
+        this.activeSceneController = sceneController;
         var scope = this;
         this.Update = (function(){
 			return function(timestamp){
@@ -50,7 +51,7 @@ Object.assign(V3f.App.prototype, {
 
                 Cik.Input.Update();
                 cameraController.Update();
-                sceneRenderer.Render(sceneController.scene);
+                sceneRenderer.Render(scope.activeSceneController.scene);
 	
 				if(V3d.Scene.stats !== undefined){
 					V3d.Scene.stats.update();
@@ -63,12 +64,24 @@ Object.assign(V3f.App.prototype, {
 
     ProjectSetup: function(){
         this.project = new V3f.Project();
-        //this.project.New();
         this.project.GUI(this.container.parentElement);
-        
-        Cik.Input.ListenKeys(['a', 'ctrl']);
-        //V3f.Auto.LoadGLTF('First');
+
+        window.sceneController = this.sceneController;
+        window.sceneRenderer = this.sceneController;
+
+        var auto = !true;
+        if(auto){
+            this.project.New();
+            V3f.Auto.LoadLibrary('Kitchen');
+            Cik.Input.DelayedAction(function(){
+                V3f.Auto.LoadLayout('Kitchen');
+            }, 1000);
+            V3d.Scene.DefaultLights(this.sceneController);
+        }
+        //V3f.Auto.LoadProject('../assets/Project/Project.v3f');
 
         //this.project.projectElements.AddLight();
+
+        Cik.Input.ListenKeys(['a', 'ctrl']);
     }
 });

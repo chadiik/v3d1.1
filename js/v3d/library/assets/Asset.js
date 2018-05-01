@@ -14,8 +14,6 @@ Object.assign(V3d.Library.Asset, {
 
     DUMMY_PREFIX: 'dummy_',
 
-    loader: new THREE.ObjectLoader(),
-
     RecoverTextures: function(view){
         var dummyPrefix = this.DUMMY_PREFIX;
         var mapsURL = location.href.indexOf('backend') !== -1 ? '../assets/Project/maps/' : 'assets/Project/maps/';
@@ -53,7 +51,7 @@ Object.assign(V3d.Library.Asset, {
     },
 
     ViewFromJSON: function(data){
-        var view = this.loader.parse(data);
+        var view = V3d.Library.loader.parse(data);
         this.RecoverTextures(view);
         return view;
     }

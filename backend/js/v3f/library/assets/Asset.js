@@ -61,6 +61,8 @@ Object.assign(V3d.Library.Asset.prototype, {
         
         this.materials.push(material);
 
+        material.shadowSide = THREE.FrontSide;
+
         var properties = Object.values(material);
         properties.forEach(property => {
             if(property instanceof THREE.Texture){
@@ -130,7 +132,6 @@ Object.assign(V3d.Library.Asset, {
                                 var id = texture.name;
                                 if(texImages[id] === undefined){
                                     texImages[id] = texture.image;
-                                    console.log(id);
                                 }
 
                                 texture.image = dummyImage;

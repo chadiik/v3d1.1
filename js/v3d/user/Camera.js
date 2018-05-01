@@ -21,8 +21,8 @@ Object.assign(V3d.Camera.prototype, {
             this.orbitControls = new THREE.OrbitControls(this.camera, container);
             this.orbitControls.target = new THREE.Vector3();
             this.orbitControls.Update = function(){
-                if(this.object.position.distanceTo(this.target) < 30){
-                    var v = new THREE.Vector3().subVectors(this.target, this.object.position).multiplyScalar(.2);
+                if(this.object.position.distanceTo(this.target) < 50){
+                    var v = new THREE.Vector3().subVectors(this.target, this.object.position).multiplyScalar(.5);
                     this.target.add(v);
                 }
                 this.update();

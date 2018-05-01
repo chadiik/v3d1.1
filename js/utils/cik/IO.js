@@ -87,7 +87,14 @@ Cik.IO = {
     PHPClear: function(dir){
         var vars = 'dir=' + encodeURIComponent(dir);
 
-        var req = this.XHRequest();
+        var req = this.XHRequest(
+            function(response){
+                console.log('Cleared', dir, response);
+            },
+            function(response){
+                console.log('Failed to clear', dir, response);
+            }
+        );
         req.open('POST', 'php/Clear.php', true);
         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         req.send(vars);

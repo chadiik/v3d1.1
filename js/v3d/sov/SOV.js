@@ -24,6 +24,7 @@ Object.assign(V3d.SOV.prototype, {
     Register: function(){
         V3d.SOV.Records.Register(this);
     }
+    
 });
 
 Object.assign(V3d.SOV, {

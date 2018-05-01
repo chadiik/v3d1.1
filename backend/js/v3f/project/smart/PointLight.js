@@ -1,7 +1,7 @@
 
 V3f.Smart.PointLight = function(light, label){
     if(label === undefined) label = 'PointLight';
-    V3f.Smart.call(this, light, label);
+    V3f.Smart.Light.call(this, light, label);
 
     var c = Cik.Config.Controller; //(property, min, max, step, onChange)
     function prependArray(pre, values){
@@ -11,40 +11,44 @@ V3f.Smart.PointLight = function(light, label){
         }
         return values;
     }
-    var track = prependArray('target.lightObject.', [
-        'name', 
-        new c('intensity', 0, 50, .5),
+
+    var track = [];
+    
+    track = track.concat(prependArray('target.lightObject.', [
         'distance',
-        new c('power', 0, 50, .5),
+        new c('power', 0, 1000, 1),
         'decay'
-    ]);
-    
-    this.color = this.target.lightObject.color.getHex();
-    var scope = this;
-    track.splice(1, 0, 
-        new c('color', undefined, undefined, undefined, function(){
-            scope.target.lightObject.color.setHex(scope.color);
-        })
-    );
-    
-    track.push('DebugLight');
+    ]));
+
+    track = track.concat(prependArray('target.lightObject.shadow.', [
+        new c('bias', -1, 1, .0001),
+        'radius'
+    ]));
+
+    track = track.concat(prependArray('target.lightObject.shadow.camera.', [
+        'fov',
+        'near',
+        'far'
+    ]));
+
     this.Config('PointLight', this, this.OnGuiChanged.bind(this), ...track);
 };
 
-V3f.Smart.PointLight.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
+V3f.Smart.PointLight.prototype = Object.assign(Object.create(V3f.Smart.Light.prototype), {
     constructor: V3f.Smart.PointLight,
 
     DebugLight: function(){
-        console.log(this.target.lightObject);
+        
+        V3f.Smart.Light.prototype.DebugLight.call(this);
     },
 
     OnGuiChanged: function(){
         
+        V3f.Smart.Light.prototype.OnGuiChanged.call(this);
     },
 
     Show: function(){
-       
         
-        V3f.Smart.prototype.Show.call(this);
+        V3f.Smart.Light.prototype.Show.call(this);
     }
 });

@@ -26,7 +26,7 @@ V3d.Scene.Controller = function(params){
 Object.assign(V3d.Scene.Controller.prototype, {
     Add: function(object){
         if(object instanceof V3d.Scene.Item){
-            this.itemsContainer.add(object);
+            this.itemsContainer.add(object.view);
         }
         else if(object instanceof V3d.Library.Light){
             this.ambientContainer.add(object.lightObject);
