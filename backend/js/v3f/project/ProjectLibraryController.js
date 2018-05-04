@@ -1,7 +1,16 @@
 
 V3f.Project.Library.Controller = {
     LoadGLTF: function(){
-        Cik.IO.PHPClear(V3d.Ressources.Temp('archives'));
+        var extractPath = V3d.Ressources.Temp('archives');
+
+        Cik.IO.PHPClear('../' + extractPath,
+            function(){ // success
+                console.log('cleared', extractPath);
+            },
+            function(){
+                console.log('error clearing space for archive');
+            }
+        );
         Cik.IO.GetFile(function(file){
             var fileInfo = Cik.IO.FileInfo(file);
 
@@ -15,7 +24,6 @@ V3f.Project.Library.Controller = {
                 }
             }
 
-            var extractPath = V3d.Ressources.Temp('archives');
             Cik.IO.PHPZipExtract(file, '../' + extractPath,
                 function(response){
                     if(response === '0'){

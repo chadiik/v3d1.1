@@ -3,9 +3,11 @@ V3f.Project.Model = function(model){
 
     if(model === undefined) model = new V3d.Model();
     this.model = model;
-    this.modelScene = new V3d.Model.Scene(this.model, V3d.app.sceneController.itemsContainer);
+
+    var state = V3d.Loop.instances['main'].states['app'];
+    this.modelScene = new V3d.Model.Scene(this.model, state.sceneController.itemsContainer);
     this.modelScene.addEventListener('update', function(){
-        V3d.app.sceneRenderer.UpdateShadowMaps();
+        state.sceneRenderer.UpdateShadowMaps();
     });
 
     this.controller = {
@@ -19,6 +21,14 @@ Object.assign(V3f.Project.Model.prototype, {
 
     GUI: function(folder){
         folder.add(this.controller, 'LoadLayout');
+        folder.add(this, 'Explore');
+    },
+
+    Explore: function(forceUpdate){
+        if(this.smart === undefined || forceUpdate){
+            this.smart = new V3f.Smart.Model(this.model);
+        }
+        this.smart.Show();
     },
 
     AddLayout: function(items){
@@ -31,6 +41,7 @@ Object.assign(V3f.Project.Model.prototype, {
         });
 
         this.TestModel();
+        this.Explore(true);
     },
 
     TestModel: function(){
@@ -46,6 +57,7 @@ Object.assign(V3f.Project.Model.prototype, {
         });
 
         V3f.Auto.MakeSmart(meshes);
+        V3d.Loop.instances['main'].Switch('app');
     },
 
     toJSON: function(){

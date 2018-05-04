@@ -604,6 +604,7 @@
 
 		domElement = ( domElement !== undefined ) ? domElement : document;
 
+		this.camera = camera;
 		this.object = undefined;
 		this.visible = false;
 		this.translationSnap = null;
@@ -781,19 +782,19 @@
 			worldPosition.setFromMatrixPosition( scope.object.matrixWorld );
 			worldRotation.setFromRotationMatrix( tempMatrix.extractRotation( scope.object.matrixWorld ) );
 
-			camera.updateMatrixWorld();
-			camPosition.setFromMatrixPosition( camera.matrixWorld );
-			camRotation.setFromRotationMatrix( tempMatrix.extractRotation( camera.matrixWorld ) );
+			scope.camera.updateMatrixWorld();
+			camPosition.setFromMatrixPosition( scope.camera.matrixWorld );
+			camRotation.setFromRotationMatrix( tempMatrix.extractRotation( scope.camera.matrixWorld ) );
 
 			scale = worldPosition.distanceTo( camPosition ) / 6 * scope.size;
 			this.position.copy( worldPosition );
 			this.scale.set( scale, scale, scale );
 
-			if ( camera instanceof THREE.PerspectiveCamera ) {
+			if ( scope.camera instanceof THREE.PerspectiveCamera ) {
 
 				eye.copy( camPosition ).sub( worldPosition ).normalize();
 
-			} else if ( camera instanceof THREE.OrthographicCamera ) {
+			} else if ( scope.camera instanceof THREE.OrthographicCamera ) {
 
 				eye.copy( camPosition ).normalize();
 
@@ -1134,7 +1135,7 @@
 			var y = ( pointer.clientY - rect.top ) / rect.height;
 
 			pointerVector.set( ( x * 2 ) - 1, - ( y * 2 ) + 1 );
-			ray.setFromCamera( pointerVector, camera );
+			ray.setFromCamera( pointerVector, scope.camera );
 
 			var intersections = ray.intersectObjects( objects, true );
 			return intersections[ 0 ] ? intersections[ 0 ] : false;

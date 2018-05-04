@@ -13,6 +13,14 @@ V3d.Navigation.FirstPerson = function(camera, domElement){
     this.momentum = 0;
     this.limitPhi = Number.MAX_VALUE - 10;
 
+    this.keyControlsEnabled = false;
+    this.keys = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, A: 65, W: 87, D: 68, S: 83 };
+    this.quat = new THREE.Quaternion();
+    this.vec3 = new THREE.Vector3();
+    this.moveSpeed = 1;
+    this.movingFwd = 0;
+    this.movingSide = 0;
+
     var scope = this;
     if(this.domElement !== undefined){
         var onMouseDown = this.OnMouseDown.bind(this);
@@ -26,6 +34,7 @@ V3d.Navigation.FirstPerson = function(camera, domElement){
             this.domElement.removeEventListener('mousedown', onMouseDown);
             document.removeEventListener('mouseup', onMouseUp);
             this.domElement.removeEventListener('mousemove', onMouseMove);
+            this.keyControls = false;
         };
     }
 
@@ -36,6 +45,71 @@ V3d.Navigation.FirstPerson = function(camera, domElement){
 
 Object.assign(V3d.Navigation.FirstPerson.prototype, {
     constructor: V3d.Navigation.FirstPerson,
+
+    OnKeyDown: function(e){
+        switch(e.keyCode){
+            case this.keys.UP:
+            case this.keys.W:
+            this.movingFwd = 1;
+            break;
+
+            case this.keys.DOWN:
+            case this.keys.S:
+            this.movingFwd = -1;
+            break;
+
+            case this.keys.RIGHT:
+            case this.keys.D:
+            this.movingSide = 1;
+            break;
+
+            case this.keys.Left:
+            case this.keys.A:
+            this.movingSide = -1;
+            break;
+        }
+    },
+
+    OnKeyUp: function(e){
+        switch(e.keyCode){
+            case this.keys.UP:
+            case this.keys.DOWN:
+            case this.keys.W:
+            case this.keys.S:
+            this.movingFwd = 0;
+            break;
+
+            case this.keys.RIGHT:
+            case this.keys.D:
+            case this.keys.Left:
+            case this.keys.A:
+            this.movingSide = 0;
+            break;
+        }
+    },
+
+    MoveForward: function(front){
+        this.vec3.set(0, 0, -1);
+        this.vec3.applyQuaternion(this.camera.getWorldQuaternion(this.quat)).normalize().multiplyScalar(this.moveSpeed * front);
+        this.vec3.y = 0;
+        this.camera.position.add(this.vec3);
+    },
+
+    MoveSideways: function(side){
+        this.vec3.set(0, 0, -1);
+        this.vec3.applyQuaternion(this.camera.getWorldQuaternion(this.quat)).normalize().multiplyScalar(this.moveSpeed * side);
+        this.vec3.set(-this.vec3.z, 0, this.vec3.x);
+        this.camera.position.add(this.vec3);
+    },
+
+    UpdateMovement: function(){
+        if(Math.abs(this.movingFwd) > .1){
+            this.MoveForward(this.movingFwd);
+        }
+        if(Math.abs(this.movingSide) > .1){
+            this.MoveSideways(this.movingSide);
+        }
+    },
 
     OnMouseDown: function(e){
         this.StartMove(e.clientX, e.clientY);
@@ -84,10 +158,9 @@ Object.assign(V3d.Navigation.FirstPerson.prototype, {
         var oldTheta = this.rotation.targetTheta;
         var oldPhi = this.rotation.targetPhi;
 
-        object.updateMatrixWorld();
-        var forward = new THREE.Vector3();
-        object.forward.getWorldPosition(forward);
-        forward.sub(object.position);
+        this.vec3.set(0, 0, -1);
+        this.vec3.applyQuaternion(object.getWorldQuaternion(this.quat)).normalize();
+        var forward = this.vec3;
         var wRight = new THREE.Vector3(1, 0, 0);
 
         var theta = Math.atan2(-forward.z, forward.x) - halfPI;
@@ -176,5 +249,31 @@ Object.assign(V3d.Navigation.FirstPerson.prototype, {
         this.camera.rotation.setFromRotationMatrix(this.rotation.matrixX);
 
         if(this.override.value > 0) this.camera.quaternion.slerp(this.override.quaternion, this.override.value);
+
+        this.UpdateMovement();
+    }
+});
+
+Object.defineProperties(V3d.Navigation.FirstPerson.prototype, {
+    keyControls: {
+        get: function(){
+            return this.keyControlsEnabled;
+        },
+
+        set: function(value){
+            if(value){
+                if(this.onKeyDown === undefined){
+                    this.onKeyDown = this.OnKeyDown.bind(this);
+                    this.onKeyUp = this.OnKeyUp.bind(this);
+                }
+                window.addEventListener('keydown', this.onKeyDown, false);
+                window.addEventListener('keyup', this.onKeyUp, false);
+            }
+            else if(this.onKeyDown !== undefined){
+                window.removeEventListener('keydown', this.onKeyDown, false);
+                window.removeEventListener('keyup', this.onKeyUp, false);
+            }
+            this.keyControlsEnabled = value;
+        }
     }
 });

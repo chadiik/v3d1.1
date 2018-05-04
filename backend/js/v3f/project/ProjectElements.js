@@ -26,8 +26,7 @@ Object.assign(V3f.Project.Elements.prototype, {
     },
 
     AddLight: function(light){
-        var sceneController = V3d.app.sceneController;
-
+        var sceneController = V3d.Loop.GetActiveSceneController();
         sceneController.Add(light);
     },
 

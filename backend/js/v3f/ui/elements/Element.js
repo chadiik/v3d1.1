@@ -11,6 +11,11 @@ Object.assign(V3f.UIElements.Element.prototype, {
     
     Show: function(){
         this.domElement.classList.remove('UIHideMenu');
+    },
+
+    Delete: function(){
+        this.domElement.remove();
+        delete this.domElement;
     }
 });
 
@@ -28,5 +33,18 @@ Object.assign(V3f.UIElements.Element, {
     Span: function(text, attributes){
         var _span = this._Span(text, attributes);
         return crel(_span.type, _span.attributes, _span.label);
+    }
+});
+
+Object.defineProperties(V3f.UIElements.Element.prototype, {
+
+    opacity: {
+        get: function(){
+            return parseFloat(this.domElement.style.opacity);
+        },
+
+        set: function(value){
+            this.domElement.style.opacity = value;
+        }
     }
 });

@@ -1858,6 +1858,7 @@ var GUI = function GUI(pars) {
     var titleRow = addRow(_this, _titleRowName);
     var onClickTitle = function onClickTitle(e) {
       e.preventDefault();
+      if(_this.opening !== undefined) _this.opening = _this.closed; // chadiik
       _this.closed = !_this.closed;
       return false;
     };
@@ -1983,7 +1984,7 @@ Common.extend(GUI.prototype,
       newGuiParams.closed = this.load.folders[name].closed;
       newGuiParams.load = this.load.folders[name];
     }
-    var gui = new GUI(newGuiParams);
+    var gui = new dat.GUI(newGuiParams);
     this.__folders[name] = gui;
     var li = addRow(this, gui.domElement);
     dom.addClass(li, 'folder');

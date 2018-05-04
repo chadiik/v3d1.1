@@ -73,8 +73,8 @@ Cik.Input = {
         this.keyboard.on = this.keyboard.simple_combo;
         this.keys = {};
 
-        for(var i = 0; i < this.onInit.length; i++){
-            this.onInit[i](this);
+        while(this.onInit.length > 0){
+            this.onInit.splice(0, 1)[0](this);
         }
     },
 
@@ -85,9 +85,9 @@ Cik.Input = {
             keys = this.defaultKeysListen;
         }
         else{
-            this.defaultKeysListen.forEach(key => {
+            /*this.defaultKeysListen.forEach(key => {
                 if(keys.indexOf(key) === -1) keys.push(key);
-            });
+            });*/
         }
 
         var scope = this;

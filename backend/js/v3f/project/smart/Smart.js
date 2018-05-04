@@ -23,6 +23,17 @@ V3f.Smart = function(target, label){
 
 Object.assign(V3f.Smart.prototype, {
 
+    Delete: function(){
+        this.Hide();
+        this.draggable.Delete();
+        this.gui.destroy();
+        this.onFocus.length = this.onFocusLost.length = 0;
+    },
+
+    UpdateGUI: function(){
+        V3f.Smart.UpdateGUI(this.gui);
+    },
+
     Hide: function(){
         this.draggable.Hide();
         V3f.Smart.SetCurrent(undefined);
@@ -40,12 +51,15 @@ Object.assign(V3f.Smart.prototype, {
         this.draggable.Show();
         this.draggable.domElement.classList.add('UIWiggleAnim');
         V3f.Smart.SetCurrent(this);
+
+        this.UpdateGUI();
     },
     
     Config: function(folderName, target, guiChanged, ...args){
         this.config = new Cik.Config(target);
         this.config.Track(...args);
         this.config.Edit(guiChanged, folderName, this.gui, {save: false});
+        return this.config.gui;
     }
 });
 
@@ -77,6 +91,18 @@ Object.assign(V3f.Smart, {
             for(iFocus = 0; iFocus < this.current.onFocus.length; iFocus++){
                 this.current.onFocus[iFocus]();
             }
+        }
+    },
+
+    UpdateGUI: function(gui){
+        if(gui === undefined) gui = this.gui;
+        for (var i in gui.__controllers) {
+            gui.__controllers[i].updateDisplay();
+        }
+
+        var folders = Object.values(gui.__folders);
+        for(i = 0; i < folders.length; i++){
+            this.UpdateGUI(folders[i]);
         }
     }
 });

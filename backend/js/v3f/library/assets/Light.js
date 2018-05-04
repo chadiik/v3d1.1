@@ -22,6 +22,17 @@ V3d.Library.Light = Cik.Utils.Redefine(V3d.Library.Light, function(instancePrope
 
 Object.assign(V3d.Library.Light.prototype, {
 
+    Delete: function(){
+        var parent = this.bulb.parent;
+        if(parent) parent.remove(this.bulb);
+
+        parent = this.lightObject.parent;
+        if(parent) parent.remove(this.lightObject);
+
+        parent = this.shadowCameraHelper;
+        if(parent) parent.remove(this.shadowCameraHelper);
+    },
+
     SetObject: function(lightObject){
         this.lightConstructor.call(this, lightObject);
 
@@ -39,7 +50,9 @@ Object.assign(V3d.Library.Light.prototype, {
             this.lightObject.shadow.bias = -0.002;
 
             this.shadowCameraHelper = new THREE.CameraHelper(this.lightObject.shadow.camera);
-            V3d.app.sceneController.Add(this.shadowCameraHelper);
+
+            var sceneController = V3d.Loop.GetActiveSceneController();
+            sceneController.Add(this.shadowCameraHelper);
             this.debug = false;
         }
 
@@ -94,7 +107,7 @@ Object.assign(V3d.Library.Light, {
 
         this.controlGroup = new V3f.ControlGroup();
         this.controlGroup.control.addEventListener('change', function(){
-            V3d.app.sceneRenderer.UpdateShadowMaps();
+            V3d.Loop.GetActiveSceneRenderer().UpdateShadowMaps();
         });
 
         this.raycastGroup = new Cik.Input.RaycastGroup(

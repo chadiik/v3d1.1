@@ -32,6 +32,7 @@ js/v3d/model/Section.js
 js/v3d/model/Layout.js
 js/v3d/model/Scene.js
 
+js/v3d/scene/Loop.js
 js/v3d/scene/Scene.js
 js/v3d/scene/Common.js
 js/v3d/scene/Controller.js

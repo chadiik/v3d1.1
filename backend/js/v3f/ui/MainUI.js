@@ -25,6 +25,17 @@ V3f.MainUI = function(container){
     this.sceneDisplay = new V3f.UIElements.Scene();
     this.sideBar.Add(this.sceneDisplay.domElement);
 
+    // Display images
+    this.currentImageDisplay = 0;
+    this.imagesDisplay = [];
+    for(var iImage = 0; iImage < 11; iImage++){
+        var imageDisplay = new V3f.UIElements.Image();
+        //imageDisplay.SetSource('http://');
+        //imageDisplay.SetLabel('Hello');
+        this.sideBar.Add(imageDisplay.domElement);
+        this.imagesDisplay.push(imageDisplay);
+    }
+
     // GUI 1
     this.sideBar.Add(this.datGUI.domElement);
 };
@@ -60,11 +71,37 @@ Object.assign(V3f.MainUI.prototype, {
                 var frame = Cik.Utils3D.FrameCamera(sceneDisplay.cameraController.camera, object);
                 sceneDisplay.cameraController.position.copy(frame.position);
                 sceneDisplay.cameraController.SetTarget(frame.target);
+
+                sceneDisplay.SetLabel(arg.name);
             }
             catch(error){
                 console.log('error in display: ', error);
             }
         });
+    },
+
+    ShowImage: function(src, label){
+        var imageDisplay;
+        if(this.currentImageDisplay >= this.imagesDisplay.length){
+            imageDisplay = new V3f.UIElements.Image();
+            this.sideBar.Add(imageDisplay.domElement);
+            this.imagesDisplay.push(imageDisplay);
+        }
+
+        imageDisplay = this.imagesDisplay[this.currentImageDisplay++];
+        imageDisplay.SetSource(src);
+        imageDisplay.SetLabel(label);
+
+        return imageDisplay;
+    },
+
+    ClearImages: function(){
+        while(this.currentImageDisplay > 0){
+            var imageDisplay = this.imagesDisplay[--this.currentImageDisplay];
+            imageDisplay.opacity = 1;
+            imageDisplay.SetSource();
+            imageDisplay.SetLabel();
+        }
     },
 
     HidePreview3D: function(){

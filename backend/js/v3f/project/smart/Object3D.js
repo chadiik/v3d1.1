@@ -10,7 +10,7 @@ V3f.Smart.Object3D = function(object, label){
     }
 
     function onShadowChange(){
-        V3d.app.sceneRenderer.UpdateShadowMaps();
+        V3d.Loop.GetActiveSceneRenderer().UpdateShadowMaps();
     }
 
     var numChildren = object.children.length;
@@ -36,12 +36,15 @@ V3f.Smart.Object3D.prototype = Object.assign(Object.create(V3f.Smart.prototype),
     constructor: V3f.Smart.Object3D,
 
     OnGuiChanged: function(){
-
+        this.UpdateGUI();
     },
 
     Show: function(){
         this.gui.__folders.Object3D.enable(this, 'Back', this.backtrack !== undefined);
-        this.gui.setTooltip(this.target, 'visible', 'Go back once and something longer.');
+        
+        if(this.target.asset){
+            this.target.asset.SaveDefaults();
+        }
         
         V3f.Smart.prototype.Show.call(this);
     },

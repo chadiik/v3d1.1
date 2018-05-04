@@ -1,5 +1,6 @@
 
 V3f.Project.Imported = function(scene){
+    console.log(scene);
     this.scene = scene;
 
     this.log = {
@@ -48,7 +49,6 @@ Object.assign(V3f.Project.Imported.prototype, {
         var functions = this.parse.sequence;
         for(var i = 0; i < functions.length; i++){
             var fn = functions[i];
-            console.log('parse.sequence', i);
             fn();
         }
     },
@@ -63,20 +63,24 @@ Object.assign(V3f.Project.Imported.prototype, {
     },
 
     Collect: function(){
+        console.log('Collect');
         this.items = V3f.Project.Imported.Collect(this.scene);
     },
 
     Optimize: function(){
+        console.log('Optimize');
         V3f.Project.Imported.Optimize(...this.items);
 
         this.items.forEach(item => {
             this.log.optimization.originalCallsNum += item.creationLog.originalCallsNum;
             this.log.optimization.newCallsNum += item.creationLog.newCallsNum;
         });
+
+        console.log(this.log.optimization);
     },
 
     Convert: function(){
-
+        console.log('Convert');
         this.items.forEach(item => {
             var obj = item.target;
             V3f.Project.Imported.Convert(obj);
@@ -141,6 +145,9 @@ Object.assign(V3f.Project.Imported, {
                     }
                 }
             });
+            if(item.creationLog === undefined){
+                console.log(item);
+            }
         });
     },
 
@@ -163,6 +170,8 @@ Object.assign(V3f.Project.Imported, {
             material.bumpMap = normalMap;
             material.normalMap = null;
         }
+
+        material.fog = false;
 
         var properties = Object.values(material);
         properties.forEach(property => {

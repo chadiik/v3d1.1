@@ -1,20 +1,8 @@
 
 V3f.Auto = {
 
-    GetDefaultCamera: function(){
-        return V3d.app.cameraController.camera;
-    },
-
     GetDefaultDomElement: function(){
         return V3d.app.sceneRenderer.renderer.domElement;
-    },
-
-    GetDefaultScene: function(){
-        return V3d.app.sceneController.scene;
-    },
-
-    GetDefaultSceneController: function(){
-        return V3d.app.sceneController;
     },
     
     LoadLibrary: function(nameOnly){
@@ -45,6 +33,7 @@ V3f.Auto = {
         var smartMeshes = [];
         meshes.forEach(mesh => {
             var smart = new V3f.Smart.Mesh(mesh);
+            mesh.smart = smart;
             smartMeshes.push(smart);
         });
 
@@ -91,8 +80,8 @@ V3f.Auto = {
         return container;
     },
 
-    SmartDisplay: function(objects){
-        var sceneController = V3d.app.sceneController;
+    SmartDisplay: function(objects, sceneController){
+        if(sceneController === undefined) sceneController = V3d.Loop.GetActiveSceneController();
         
         var row = V3f.Auto.DisplayRow(objects);
         sceneController.Add(row);

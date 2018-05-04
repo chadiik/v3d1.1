@@ -10,6 +10,8 @@ Cik.Utils = {
     
         Object.assign(def, classProperties);
         Object.assign(def.prototype, instanceProperties);
+        Object.defineProperties(def, Object.getOwnPropertyDescriptors(classProperties));
+        Object.defineProperties(def.prototype, Object.getOwnPropertyDescriptors(instanceProperties));
 
         return def;
     },
@@ -40,5 +42,16 @@ Cik.Utils = {
     TrimVariableRegex: new RegExp(/(?:\d|_|-)+$/),
     TrimVariable: function(input){
         return input.replace(this.TrimVariableRegex, "");
+    },
+
+    LimitString: function(str, length){
+        if(str.length > length) str = str.substring(str.length - length);
+        return str;
+    },
+
+    LoopIndex: function(i, len){
+        i = i % len;
+        if(i < 0) i = len + i;
+        return i;
     }
 };

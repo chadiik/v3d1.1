@@ -26,15 +26,26 @@ Object.assign(V3d.Library.Asset.prototype, {
         this.smart.Show();
     },
 
+    FindSection: function(){ // for Smart dialog
+        V3d.Model.FindSection(this.view);
+    },
+
     GetSmartParams: function(){
         // (folderName, target, guiChanged, ...args)
 
         var folderName = 'Asset';
         var target = this;
         var guiChanged = this.OnGuiChanged;
-        var track = ['Smart'];
+        var track = ['Smart', 'FindSection'];
 
         return [folderName, target, guiChanged].concat(track);
+    },
+
+    SaveDefaults: function(){
+        if(this.config === undefined){
+            this.config = new V3d.Library.Asset.Config(this);
+            this.config.Save();
+        }
     },
 
     Parse: function(){
@@ -91,7 +102,8 @@ Object.assign(V3d.Library.Asset.prototype, {
         V3d.Library.Asset.StripTextures(cleanView);
         return {
             sov: this.sov,
-            view: cleanView.toJSON()
+            view: cleanView.toJSON(),
+            config: this.config
         };
     }
 });
@@ -143,4 +155,16 @@ Object.assign(V3d.Library.Asset, {
             }
         });
     },
+
+    FromJSON: (function(){
+        var originalFunction = V3d.Library.Asset.FromJSON;
+        return function(data){
+            var asset = originalFunction.call(V3d.Library.Asset, data);
+            var configData = data.config;
+            if(config !== undefined){
+                var config = V3d.Library.Asset.Config.FromJSON(configData, asset);
+                asset.config = config;
+            }
+        };
+    })()
 });

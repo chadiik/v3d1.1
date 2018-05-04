@@ -28,10 +28,10 @@ Object.assign(V3f.App.prototype, {
         var sceneRenderer = new V3d.Scene.Renderer(rendererParams);
         this.sceneRenderer = sceneRenderer;
 
-        var cameraParams = {fov: 65, aspect: 1, near: 1 * units, far: 10000 * units};
+        var cameraParams = {fov: 65, aspect: 1, near: 1 * units, far: 10000 * units, id: 'app'};
         var cameraController = new V3d.User.Camera(cameraParams);
-        var fpsParams = {speedX: .0021, speedY: .0021, damping: .2, momentum: .9, limitPhi: 87 * Math.PI / 180};
-        //cameraController.FirstPersonControls(container, fpsParams);
+        var fpsParams = {speedX: .0021, speedY: .0021, damping: .2, momentum: .9, limitPhi: 87 * Math.PI / 180, moveSpeed: 1};
+        cameraController.FirstPersonControls(container, fpsParams);
         cameraController.OrbitControls(container);
         this.cameraController = cameraController;
 
@@ -43,19 +43,15 @@ Object.assign(V3f.App.prototype, {
         var setupParams = {input: true, stats: true, sky: true, config: true};
         V3d.Scene.DefaultSetup(container, sceneController, sceneRenderer, cameraController, setupParams);
 
-        this.activeSceneController = sceneController;
+        var loop = new V3d.Loop('main');
+        loop.Switch('app', this.sceneController, this.sceneRenderer, this.cameraController, {updateInput: true, updateStats: true});
+
         var scope = this;
         this.Update = (function(){
 			return function(timestamp){
 				scope.animationFrameID = requestAnimationFrame(scope.Update);
 
-                Cik.Input.Update();
-                cameraController.Update();
-                sceneRenderer.Render(scope.activeSceneController.scene);
-	
-				if(V3d.Scene.stats !== undefined){
-					V3d.Scene.stats.update();
-				}
+                loop.Update();
 			}
 		})();
 
@@ -69,19 +65,21 @@ Object.assign(V3f.App.prototype, {
         window.sceneController = this.sceneController;
         window.sceneRenderer = this.sceneController;
 
-        var auto = !true;
+        var auto = true;
         if(auto){
             this.project.New();
-            V3f.Auto.LoadLibrary('Kitchen');
+            V3f.Auto.LoadLibrary('Complete1');
             Cik.Input.DelayedAction(function(){
-                V3f.Auto.LoadLayout('Kitchen');
+                V3f.Auto.LoadLayout('Complete1');
             }, 1000);
             V3d.Scene.DefaultLights(this.sceneController);
+
+            //cameraController.ToggleControls();
         }
         //V3f.Auto.LoadProject('../assets/Project/Project.v3f');
 
         //this.project.projectElements.AddLight();
 
-        Cik.Input.ListenKeys(['a', 'ctrl']);
+        Cik.Input.ListenKeys(['ctrl', 'space']);
     }
 });

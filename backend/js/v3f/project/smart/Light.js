@@ -41,9 +41,9 @@ V3f.Smart.Light.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
     },
 
     Delete: function(){
-        if(this.target.lightObject.OnDelete !== undefined){
-            this.target.lightObject.OnDelete();
-        }
+        this.target.Delete();
+
+        V3f.Smart.prototype.Delete.call(this);
     },
 
     OnGuiChanged: function(){

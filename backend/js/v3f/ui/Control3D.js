@@ -1,7 +1,8 @@
 if(typeof V3f === 'undefined') V3f = {};
 
 V3f.Control3D = function(camera, domElement){
-    this.control = new THREE.TransformControls(camera, domElement);
+    this.camera = camera;
+    this.control = new THREE.TransformControls(this.camera, domElement);
     this.control.addEventListener('change', this.Update.bind(this));
 
     this.control.traverse(function(child){
@@ -12,6 +13,12 @@ V3f.Control3D = function(camera, domElement){
 Object.assign(V3f.Control3D.prototype, {
 
     Attach: function(target){
+        var camera = V3d.Loop.GetActiveCamera();
+        if(camera !== this.camera){
+            this.control.camera = camera;
+            this.camera = camera;
+        }
+        
         this.control.attach(target);
     },
 
@@ -51,8 +58,7 @@ Object.assign(V3f.Control3D, {
     controls: {},
 
     Create: function(id){
-        var sceneController = V3d.app.sceneController, sceneRenderer = V3d.app.sceneRenderer, cameraController = V3d.app.cameraController;
-        var scene = sceneController.scene, domElement = sceneRenderer.renderer.domElement, camera = cameraController.camera;
+        var camera = V3d.Loop.GetActiveCamera(), domElement = V3d.Loop.GetActiveSceneRenderer().renderer.domElement;
         
         var control = new V3f.Control3D(camera, domElement);
         this.active = this.controls[id] = control;

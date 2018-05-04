@@ -43,6 +43,21 @@ Cik.IO = {
         Cik.IO.FileInput.click();
     },
 
+    UploadFile: function(path, callback, failure){
+        var filename;
+        var success = function(response){
+            callback(filename);
+        };
+        var failure = failure || function(response){
+            console.log('Filename:', filename, ' - Failed to upload\n', response);
+        };
+        var onFile = function(file){
+            filename = file.name;
+            Cik.IO.PHPFileUpload(file, path, success, failure);
+        };
+        Cik.IO.GetFile(onFile);
+    },
+
     XHRequest: function(success, failure){
         var req = false;
         try
@@ -84,17 +99,10 @@ Cik.IO = {
         return req;
     },
 
-    PHPClear: function(dir){
+    PHPClear: function(dir, success, failure){
         var vars = 'dir=' + encodeURIComponent(dir);
 
-        var req = this.XHRequest(
-            function(response){
-                console.log('Cleared', dir, response);
-            },
-            function(response){
-                console.log('Failed to clear', dir, response);
-            }
-        );
+        var req = this.XHRequest(success, failure);
         req.open('POST', 'php/Clear.php', true);
         req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         req.send(vars);
@@ -108,6 +116,18 @@ Cik.IO = {
 
         var req = this.XHRequest(success, failure);
         req.open('POST', 'php/Zipper.php', true);
+        req.send(formData);
+        return req;
+    },
+
+    PHPFileUpload: function(file, path, success, failure){
+        var formData = new FormData();
+        formData.append("path", path);
+        formData.append("file", file);
+
+        var req = this.XHRequest(success, failure);
+        req.open("POST", "php/FileUploader.php", true);
+        req.setRequestHeader("enctype", "multipart/form-data");
         req.send(formData);
         return req;
     }

@@ -14184,7 +14184,7 @@
 				var material = this.material;
 				var matrixWorld = this.matrixWorld;
 
-				if ( material === undefined ) return;
+				if ( material === undefined || this.disableRaycast ) return; // chadiik: || this.disableRaycast
 
 				// Checking boundingSphere distance to ray
 

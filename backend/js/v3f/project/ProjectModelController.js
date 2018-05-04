@@ -2,7 +2,7 @@
 V3f.Project.Model.Controller = {
 
     LoadLayout: function(){
-        Cik.IO.PHPClear(V3d.Ressources.Temp('archives'));
+        Cik.IO.PHPClear('../' + V3d.Ressources.Temp('archives'));
         Cik.IO.GetFile(function(file){
             var fileInfo = Cik.IO.FileInfo(file);
 

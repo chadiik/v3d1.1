@@ -1,8 +1,7 @@
 <?php
 
-    $dir = isset($_POST["dir"]) ? $_POST["dir"] : "temp";
-    $result = rrmdir($dir);
-    echo $result;
+    $dir = isset($_POST["dir"]) ? $_POST["dir"] : "../temp";
+    rrmdir($dir);
 
     function rrmdir($dir) { 
         if (is_dir($dir)) { 
@@ -16,8 +15,6 @@
                 }
             }
             rmdir($dir);
-            return true;
         }
-        return false;
     }
 ?>

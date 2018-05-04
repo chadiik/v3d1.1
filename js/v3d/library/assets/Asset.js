@@ -14,9 +14,13 @@ Object.assign(V3d.Library.Asset, {
 
     DUMMY_PREFIX: 'dummy_',
 
+    GetMapsURL: function(){
+        return location.href.indexOf('backend') !== -1 ? '../assets/Project/maps/' : 'assets/Project/maps/';
+    },
+
     RecoverTextures: function(view){
         var dummyPrefix = this.DUMMY_PREFIX;
-        var mapsURL = location.href.indexOf('backend') !== -1 ? '../assets/Project/maps/' : 'assets/Project/maps/';
+        var mapsURL = this.GetMapsURL();
 
         view.traverse(function(child){
             if(child instanceof THREE.Mesh){

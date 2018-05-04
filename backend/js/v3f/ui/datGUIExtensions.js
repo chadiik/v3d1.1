@@ -1,4 +1,6 @@
 
+var guiPrototype = Object.create(dat.GUI.prototype);
+
 dat.GUI.prototype.find = function(object, property){
     var gui = this, controller, i;
     for (i = 0; i < gui.__controllers.length; i++){
@@ -14,6 +16,27 @@ dat.GUI.prototype.find = function(object, property){
     }
     return undefined;
 };
+
+// On open event
+//if(_this.opening !== undefined) _this.opening = _this.closed; // chadiik
+
+dat.GUI = Cik.Utils.Redefine(dat.GUI, function(instanceProperties){
+    return function(params){
+        instanceProperties.constructor.call(this, params);
+        this.onGUIEvent = [];
+    };
+});
+Object.defineProperty(dat.GUI.prototype, 'opening', {
+    get: function(){
+        return !this.closed;
+    },
+
+    set: function(value){
+        for(var i = 0; i < this.onGUIEvent.length; i++){
+            this.onGUIEvent[i](value ? 'open' : 'close');
+        }
+    }
+});
 
 // Disabled
 function blockEvent(event){

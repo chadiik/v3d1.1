@@ -3,6 +3,11 @@
 V3f.UIElements.Scene = function(params){
     V3f.UIElements.Display.call(this, params);
 
+    var originalFullscreen = Object.getOwnPropertyDescriptor(V3f.UIElements.Display.prototype, 'fullscreen');
+    Object.defineProperty(V3f.UIElements.Scene.prototype, 'originalFullscreen', {
+        set : originalFullscreen.set
+    });
+
     var scope = this;
 
     var units = 1;
@@ -50,7 +55,10 @@ V3f.UIElements.Scene = function(params){
             cameraController.Update();
             sceneRenderer.Render(sceneController.scene);
 		}
-	})();
+    })();
+    
+    this.InitLabel();
+    this.SetLabel('3D');
 
 	this.Update();
 };
@@ -70,20 +78,10 @@ V3f.UIElements.Scene.prototype = Object.assign(Object.create(V3f.UIElements.Disp
     }
 });
 
-Object.defineProperties(V3f.UIElements.Display.prototype, {
+Object.defineProperties(V3f.UIElements.Scene.prototype, {
     fullscreen: {
         set: function(value){
-            if(value){
-                this.domParent = this.domElement.parentNode;
-                this.domIndex = Array.prototype.slice.call(this.domParent.children).indexOf(this.domElement);
-
-                this.domElement.classList.add('UIDisplayFull');
-                document.body.appendChild(this.domElement);
-            }
-            else{
-                this.domElement.classList.remove('UIDisplayFull');
-                this.domParent.children[this.domIndex].insertAdjacentElement('beforebegin', this.domElement);
-            }
+            this.originalFullscreen = value;
 
             var style = window.getComputedStyle(this.domElement),
                 width = parseFloat(style.width);

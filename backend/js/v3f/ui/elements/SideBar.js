@@ -13,8 +13,8 @@ V3f.UIElements.SideBar = function(){
 V3f.UIElements.SideBar.prototype = Object.assign(Object.create(V3f.UIElements.Element.prototype), {
     constructor: V3f.UIElements.SideBar,
     
-    Add: function(elt){
-        elt.classList.add('UISidebarItem');
+    Add: function(elt, styling){
+        if(styling || styling === undefined) elt.classList.add('UISidebarItem');
         this.domElement.appendChild(elt);
     },
 

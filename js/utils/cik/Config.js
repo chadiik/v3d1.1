@@ -15,14 +15,21 @@ Object.assign(Cik.Config.prototype, {
         });
     },
 
-    Save: function(){
+    Snapshot: function(){
         var data = {};
         var obj = this.target;
         this.keys.forEach(key => {
             if(key instanceof Cik.Config.Controller) key = key.property;
-            data[key] = Cik.Config.getKey(obj,  key);
+            var keyValue = Cik.Config.getKey(obj,  key);
+            if(typeof keyValue !== 'function'){
+                data[key] = keyValue;
+            }
         });
-        this.data = data;
+        return data;
+    },
+
+    Save: function(){
+        this.data = this.Snapshot();
     },
 
     Edit: function(guiChanged, label, gui, params){
@@ -81,7 +88,7 @@ Object.assign(Cik.Config.prototype, {
             },
 
             Debug: function(){
-                console.log(scope);
+                console.log(scope.target);
             }
         }
         if(params.save){

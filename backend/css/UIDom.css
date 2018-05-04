@@ -76,6 +76,18 @@
     width: 250px;
     margin: 10px;
     background-color: #0000005f;
+
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.UISidebar::-webkit-scrollbar {
+    width: 4px;
+    /*background: transparent;*/
+}
+
+.UISidebar::-webkit-scrollbar-thumb {
+    background: rgb(0, 0, 0);
 }
 
 .UISidebarHeader{
@@ -98,7 +110,7 @@
 
 .UISidebarItem{
     margin-top: 10px !important;
-    padding: 2px !important;
+    padding: 2px;
     width: calc(100% - 4px);
 }
 
@@ -148,7 +160,12 @@
 /*                                              Display */
 
 .UIDisplay{
+    position: relative;
     float: right;
+    border-top:1px solid #000;
+    border-bottom:1px solid rgba(0, 0, 0, 0.5);
+    padding-top: 4px;
+    margin-bottom: 4px;
 }
 
 .UIDisplayFull{
@@ -161,6 +178,47 @@
 
 .UISceneDisplay{
     width: 100%;
+}
+
+.UIImageDisplay{
+    width: 100%;
+}
+
+.UILabelDisplay{
+    position: relative;
+    font-size: small;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    color: #ffffff;
+    background-color: #111;
+    overflow-wrap: break-word;
+    padding: 2px;
+}
+
+
+/*                                              Icons */
+
+.UIcon{
+    
+    /*background: url(../ressources/Icons.png) 0 0;*/
+    /*background-color: rgb(255, 255, 255, .5);*/
+
+    position: absolute;
+    width: 18px;
+    height: 16px;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+}
+
+.UIcon:hover {
+    display: inline-block;
+    transform: scale(1.15);
+}
+
+.UIcon:active {
+    display: inline-block;
+    transform: scale(.7);
 }
 
 

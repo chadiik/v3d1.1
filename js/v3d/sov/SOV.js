@@ -1,10 +1,24 @@
 if(typeof V3d === 'undefined') V3d = {};
 
 V3d.SOV = function(){
-    
+    this.s;
+    this.o;
+    this.v;
 };
 
 Object.assign(V3d.SOV.prototype, {
+
+    Equal: function(sov){
+        if(typeof sov === 'string'){
+            return this.ToString() === sov;
+        }
+        
+        if(this.s !== sov.s) return false;
+        if(this.o !== sov.o) return false;
+        if(this.v !== sov.v) return false;
+        
+        return true;        
+    },
     
     Clone: function(sov){
         return V3d.SOV.Build(sov.s, sov.o, sov.v);

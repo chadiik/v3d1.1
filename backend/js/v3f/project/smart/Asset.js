@@ -6,6 +6,7 @@ V3f.Smart.Asset = function(object, label){
 
     var c = Cik.Config.Controller; //(property, min, max, step, onChange)
     var track = [
+        'Revert',
         'ConfigView',
         'Log'
     ];
@@ -17,6 +18,12 @@ V3f.Smart.Asset.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
 
     OnGuiChanged: function(){
 
+    },
+
+    Revert: function(){
+        if(this.target.config){
+            this.target.config.Load();
+        }
     },
 
     ConfigView: function(){

@@ -1,6 +1,6 @@
 
 V3d.Model = function(){
-
+    
     this.layouts = [];
     this.current = -1;
 };
@@ -29,6 +29,11 @@ Object.assign(V3d.Model.prototype, {
         }
 
         this.current = id;
+    },
+
+    FindSection: function(sov, layout){
+        if(layout === undefined) layout = this.layouts[this.current];
+        return layout.FindSection(sov);
     }
 });
 

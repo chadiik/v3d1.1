@@ -5,11 +5,15 @@ Object.assign(V3d.Scene, {
         if(setupParams.input){
             Cik.Input.Init(container);
             Cik.Input.camera = cameraController.camera;
-            Cik.Input.onResize.push(sceneRenderer.ReconfigureViewport.bind(sceneRenderer));
+
+            if(sceneRenderer)
+                Cik.Input.onResize.push(sceneRenderer.ReconfigureViewport.bind(sceneRenderer));
         }
         
-        container.appendChild(sceneRenderer.renderer.domElement);
-        sceneRenderer.UseCamera(cameraController.camera);
+        if(sceneRenderer){
+            container.appendChild(sceneRenderer.renderer.domElement);
+            sceneRenderer.UseCamera(cameraController.camera);
+        }
 
         var units = sceneController.params.units;
 

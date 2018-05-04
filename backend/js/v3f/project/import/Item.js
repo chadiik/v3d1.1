@@ -23,7 +23,7 @@ Object.assign(V3f.Project.Imported.Item.prototype, {
         var numGroups = geometry.groups.length;
         //this.creationLog.originalCallsNum += numGroups;
         if(numGroups === 0){
-            var materialUUID = mesh.material.uuid;
+            var materialUUID = mesh.material.uuid + Object.keys(geometry.attributes).length;
             if(this.materialsMap[materialUUID] === undefined){
                 
                 this.creationLog.newCallsNum++;
@@ -46,8 +46,8 @@ Object.assign(V3f.Project.Imported.Item.prototype, {
             for(var iGroup = 0; iGroup < numGroups; iGroup++){
                 var group = mesh.geometry.groups[iGroup];
                 var groupMaterial = mesh.material[group.materialIndex];
-                var materialUUID = groupMaterial.uuid;
                 var groupGeometry = V3f.Project.Imported.Item.ExtractBGGroup(mesh.geometry, group);
+                var materialUUID = groupMaterial.uuid + Object.keys(groupGeometry.attributes).length;
                 if(this.materialsMap[materialUUID] === undefined){
 
                     this.creationLog.newCallsNum++;
