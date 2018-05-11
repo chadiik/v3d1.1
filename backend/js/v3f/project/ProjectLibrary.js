@@ -10,12 +10,12 @@ V3f.Project.Library = function(library){
 
     V3f.Project.Library.onItemsLoaded.push(this.AddImportedItems.bind(this));
 
-    this.InitScene();
+    this.InitSceneController();
 };
 
 Object.assign(V3f.Project.Library.prototype, {
 
-    InitScene: function(){
+    InitSceneController: function(){
         var container = document.getElementById('viewerGL');
 
         var units = 1;

@@ -22,54 +22,81 @@ Object.assign(V3f.Project.prototype, {
         this.projectModel = new V3f.Project.Model();
         this.NotifyModelCreated();
 
-        this.projectElements = new V3f.Project.Elements();
+        this.projectElements = new V3f.Project.Elements(this);
         this.NotifyElementsCreated();
     },
 
     LoadProjectFile: function(zip, filename){
         var scope = this;
 
-        zip.file("projectLibrary.json").async("string").then(
-            function (projectLibraryContent) {
-                var data = JSON.parse(projectLibraryContent);
-                scope.projectLibrary = V3f.Project.Library.FromJSON(data);
-                scope.NotifyLibraryCreated();
+        var loadElements = function(){
+            zip.file("projectElements.json").async("string").then(
+                function (projectElementsContent) {
+                    var data = JSON.parse(projectElementsContent);
+                    scope.projectElements = V3f.Project.Elements.FromJSON(data, scope);
+                    scope.NotifyElementsCreated();
+                }
+            );
+        };
 
-                zip.file("projectModel.json").async("string").then(
-                    function (projectModelContent) {
-                        var projectModelData = JSON.parse(projectModelContent);
-                        scope.projectModel = V3f.Project.Model.FromJSON(projectModelData);
-                        scope.NotifyModelCreated();
-                    }
-                );
-            }
-        );
+        var loadModel = function(){
+            zip.file("projectModel.json").async("string").then(
+                function (projectModelContent) {
+                    var projectModelData = JSON.parse(projectModelContent);
+                    scope.projectModel = V3f.Project.Model.FromJSON(projectModelData);
+                    scope.NotifyModelCreated();
 
-        zip.file("projectElements.json").async("string").then(
-            function (projectElementsContent) {
-                var data = JSON.parse(projectElementsContent);
-                scope.projectElements = V3f.Project.Elements.FromJSON(data);
-                scope.NotifyElementsCreated();
-            }
-        );
+                    loadElements();
+                }
+            );
+        };
+
+        var loadLibrary = function(){
+            zip.file("projectLibrary.json").async("string").then(
+                function (projectLibraryContent) {
+                    var data = JSON.parse(projectLibraryContent);
+                    scope.projectLibrary = V3f.Project.Library.FromJSON(data);
+                    scope.NotifyLibraryCreated();
+
+                    loadModel();
+                }
+            );
+        };
+
+        loadLibrary();
     },
 
     NotifyLibraryCreated: function(){
         for(var i = 0; i < this.onLibraryCreated.length; i++){
             this.onLibraryCreated[i]();
         }
+        this.PostLoadCheck();
     },
 
     NotifyModelCreated: function(){
         for(var i = 0; i < this.onModelCreated.length; i++){
             this.onModelCreated[i]();
         }
+        this.PostLoadCheck();
     },
 
     NotifyElementsCreated: function(){
         for(var i = 0; i < this.onElementsCreated.length; i++){
             this.onElementsCreated[i]();
         }
+        this.PostLoadCheck();
+    },
+
+    PostLoadCheck: function(){
+        if(this.projectLibrary && this.projectModel && this.projectElements){
+            this.PostLoad();
+        }
+    },
+
+    PostLoad: function(){
+        Cik.Input.DelayedAction(function(){
+            V3d.Project.PostLoadSetup();
+        }, 500);
     },
 
     GUI: function(container){
@@ -89,11 +116,12 @@ Object.assign(V3f.Project.prototype, {
 
         var projectFolder = ui.AddFolder('Project');
         projectFolder.open();
-        V3f.Project.Controller.GUI(projectFolder);
+        this.controller = new V3f.Project.Controller();
+        this.controller.GUI(projectFolder);
 
         var libraryFolder = this.ui.AddFolder('Library');
         var modelFolder = this.ui.AddFolder('Layout');
-        var elementsFolder = this.ui.AddFolder('Add');
+        var elementsFolder = this.ui.AddFolder('Scene');
 
         var scope = this;
         this.onLibraryCreated.push(function(){

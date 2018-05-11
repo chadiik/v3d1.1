@@ -31,6 +31,9 @@ Object.assign(V3d.Scene.Controller.prototype, {
         else if(object instanceof V3d.Library.Light){
             this.ambientContainer.add(object.lightObject);
         }
+        else if(object instanceof V3d.Library.CubeCameraController){
+            this.ambientContainer.add(object.cubeCamera);
+        }
         else {
             this.miscContainer.add(object);
         }

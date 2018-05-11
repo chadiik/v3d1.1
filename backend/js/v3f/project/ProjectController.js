@@ -1,16 +1,26 @@
 
-V3f.Project.Controller = {
+V3f.Project.Controller = function(){
+    
+};
+
+Object.assign(V3f.Project.Controller.prototype, {
+
     GUI: function(folder){
+        this.guiFolder = folder;
+
         folder.add(this, 'New');
         folder.add(this, 'Load');
         folder.add(this, 'Save');
     },
 
     New: function(){
+        this.DisableNewLoad();
+
         V3f.Project.New();
     },
 
     Load: function(){
+        var scope = this;
         Cik.IO.GetFile(function(file){
             var fileInfo = Cik.IO.FileInfo(file);
 
@@ -22,10 +32,16 @@ V3f.Project.Controller = {
 
             var reader = new FileReader();
 			reader.onload = function(event) {
+                scope.DisableNewLoad();
                 V3f.Project.LoadProjectFile(event.target.result, file.name);
 			};
 			reader.readAsArrayBuffer(file);
         });
+    },
+
+    DisableNewLoad: function(){
+        this.guiFolder.enable(this, 'New', false);
+        this.guiFolder.enable(this, 'Load', false);
     },
 
     Save: function(){
@@ -33,4 +49,4 @@ V3f.Project.Controller = {
             saveAs(data.file, data.filename);
         });
     }
-};
+});

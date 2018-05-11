@@ -31,8 +31,8 @@ Object.assign(V3f.App.prototype, {
         var cameraParams = {fov: 65, aspect: 1, near: 1 * units, far: 10000 * units, id: 'app'};
         var cameraController = new V3d.User.Camera(cameraParams);
         var fpsParams = {speedX: .0021, speedY: .0021, damping: .2, momentum: .9, limitPhi: 87 * Math.PI / 180, moveSpeed: 1};
-        cameraController.FirstPersonControls(container, fpsParams);
         cameraController.OrbitControls(container);
+        cameraController.FirstPersonControls(container, fpsParams);
         this.cameraController = cameraController;
 
         var guiChanged = function(){
@@ -46,6 +46,8 @@ Object.assign(V3f.App.prototype, {
         var loop = new V3d.Loop('main');
         loop.Switch('app', this.sceneController, this.sceneRenderer, this.cameraController, {updateInput: true, updateStats: true});
 
+        cameraController.ToggleControls();
+
         var scope = this;
         this.Update = (function(){
 			return function(timestamp){
@@ -55,7 +57,7 @@ Object.assign(V3f.App.prototype, {
 			}
 		})();
 
-		this.Update();
+        this.Update();
     },
 
     ProjectSetup: function(){
@@ -65,7 +67,7 @@ Object.assign(V3f.App.prototype, {
         window.sceneController = this.sceneController;
         window.sceneRenderer = this.sceneController;
 
-        var auto = true;
+        var auto = !true;
         if(auto){
             this.project.New();
             V3f.Auto.LoadLibrary('Complete1');
@@ -76,7 +78,7 @@ Object.assign(V3f.App.prototype, {
 
             //cameraController.ToggleControls();
         }
-        //V3f.Auto.LoadProject('../assets/Project/Project.v3f');
+        V3f.Auto.LoadProject('../assets/Project/Living.v3f');
 
         //this.project.projectElements.AddLight();
 

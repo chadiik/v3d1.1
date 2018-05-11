@@ -20,5 +20,15 @@ Cik.Utils3D = {
             position: position,
             target: frameCenter
         };
+    },
+
+    Traverse: function(object3d, callback, level){
+        if(level === undefined) level = 0;
+        callback(object3d, level);
+        var children = object3d.children;
+        for(var i = 0, l = children.length; i < l; i ++) {
+            this.Traverse(children[i], callback, level + 1);
+        }
     }
+    
 };

@@ -56,7 +56,7 @@ Object.assign(V3f.Project.Model.prototype, {
             });
         });
 
-        V3f.Auto.MakeSmart(meshes);
+        V3f.Auto.MakeSmart(meshes, 'app');
         V3d.Loop.instances['main'].Switch('app');
     },
 

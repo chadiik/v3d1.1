@@ -1,6 +1,6 @@
 
 V3d.Library.Light = Cik.Utils.Redefine(V3d.Library.Light, function(instanceProperties){
-    return function(lightObject){
+    return function(lightObject, shadowMapSize){
 
         V3d.Library.Light.Init();
 
@@ -16,25 +16,32 @@ V3d.Library.Light = Cik.Utils.Redefine(V3d.Library.Light, function(instancePrope
         ));
 
         this.lightConstructor = instanceProperties.constructor;
-        if(lightObject) this.SetObject(lightObject);
+        this.SetObject(lightObject, shadowMapSize);
     }
 });
 
 Object.assign(V3d.Library.Light.prototype, {
 
-    Delete: function(){
-        var parent = this.bulb.parent;
-        if(parent) parent.remove(this.bulb);
+    Delete: (function(){
+        var originalDelete = V3d.Library.Light.prototype.Delete;
 
-        parent = this.lightObject.parent;
-        if(parent) parent.remove(this.lightObject);
+        return function(){
+            originalDelete.call(this);
 
-        parent = this.shadowCameraHelper;
-        if(parent) parent.remove(this.shadowCameraHelper);
-    },
+            var parent = this.lightObject.parent;
+            if(parent) parent.remove(this.lightObject);
+            
+            parent = this.bulb.parent;
+            if(parent) parent.remove(this.bulb);
 
-    SetObject: function(lightObject){
-        this.lightConstructor.call(this, lightObject);
+            parent = this.shadowCameraHelper;
+            if(parent) parent.remove(this.shadowCameraHelper);
+        };
+
+    })(),
+
+    SetObject: function(lightObject, shadowMapSize){
+        this.lightConstructor.call(this, lightObject, shadowMapSize);
 
         this.lightObject.add(this.bulb);
 
@@ -84,7 +91,8 @@ Object.assign(V3d.Library.Light.prototype, {
         var lightObject = this.lightObject.clone();
         this.lightObject.add(this.bulb);
         return {
-            lightObject: lightObject
+            lightObject: lightObject,
+            shadowMapSize: this.shadowMapSize
         };
     }
 });

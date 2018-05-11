@@ -3,6 +3,13 @@ js/lib/three/three-91.js
 js/lib/three/controls/OrbitControls.js
 js/lib/three/objects/Sky.js
 
+js/lib/three/postprocessing/EffectComposer.js
+js/lib/three/postprocessing/RenderPass.js
+js/lib/three/postprocessing/CopyShader.js
+js/lib/three/postprocessing/ShaderPass.js
+js/lib/three/postprocessing/SSAOShader.js
+js/lib/three/postprocessing/SSAOPass.js
+
 js/lib/crel.js
 js/lib/keypress.js
 js/lib/jszip.min.js
@@ -26,6 +33,7 @@ js/v3d/library/Library.js
 js/v3d/library/Item.js
 js/v3d/library/assets/Asset.js
 js/v3d/library/assets/Light.js
+js/v3d/library/assets/CubeCamera.js
 
 js/v3d/model/Model.js
 js/v3d/model/Section.js
@@ -43,5 +51,7 @@ js/v3d/user/navigation/Navigation.js
 js/v3d/user/navigation/FirstPerson.js
 js/v3d/user/User.js
 js/v3d/user/Camera.js
+
+js/v3d/project/Project.js
 
 js/v3d/interface/Interface.js

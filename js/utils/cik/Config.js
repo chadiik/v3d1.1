@@ -15,7 +15,7 @@ Object.assign(Cik.Config.prototype, {
         });
     },
 
-    Snapshot: function(){
+    Snapshot: function(ignoreKeys){
         var data = {};
         var obj = this.target;
         this.keys.forEach(key => {
@@ -23,6 +23,15 @@ Object.assign(Cik.Config.prototype, {
             var keyValue = Cik.Config.getKey(obj,  key);
             if(typeof keyValue !== 'function'){
                 data[key] = keyValue;
+            }
+            else if(ignoreKeys !== undefined){
+                var warn = true;
+                ignoreKeys.forEach(ignoredKey => {
+                    if(ignoredKey === key){
+                        warn = false;
+                    }
+                });
+                if(warn) console.log('Config.Snapshot warning: "' + key + '" changes will be lost on', obj);
             }
         });
         return data;
@@ -59,7 +68,7 @@ Object.assign(Cik.Config.prototype, {
             var isController = key instanceof Cik.Config.Controller;
             var keyInfo = Cik.Config.KeyInfo(target, isController ? key.property : key);
             if(this.editing[keyInfo.key] !== true){
-                var addFunction = keyInfo.key === 'color' ? gui.addColor : gui.add;
+                var addFunction = keyInfo.owner[keyInfo.key].isColor ? gui.addColor : gui.add;
                 controllers.push(
                     ( isController && key.min !== undefined ? 
                         addFunction.call(gui, 
@@ -70,7 +79,7 @@ Object.assign(Cik.Config.prototype, {
                         )
                     ) .onChange(key.onChange === undefined ? guiChanged : 
                         (function(){
-                            key.onChange();
+                            key.onChange.call(keyInfo.owner);
                             guiChanged();
                         })
                     )

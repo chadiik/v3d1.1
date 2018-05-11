@@ -1,9 +1,10 @@
 
 V3d.Model.Section = function(sov){
 
-    this.sov = sov;
     this._view;
     this._transform;
+
+    this.sov = sov;
 };
 
 Object.defineProperties(V3d.Model.Section.prototype, {
@@ -51,6 +52,13 @@ Object.assign(V3d.Model.Section.prototype, {
     ApplyTransform: function(){
         this._view.position.copy(this._transform.position);
         this._view.rotation.copy(this._transform.rotation);
+    },
+
+    Refresh: function(){
+        var sov = this._sov;
+        this._sov = undefined;
+        this._view = undefined;
+        this.sov = sov;
     }
 });
 

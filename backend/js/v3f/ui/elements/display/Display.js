@@ -16,6 +16,7 @@ V3f.UIElements.Display.prototype = Object.assign(Object.create(V3f.UIElements.El
         if(this.label === undefined){
             this.label = crel('div', {class: 'UILabelDisplay'});
             this.domElement.appendChild(this.label);
+            this.SetLabel();
         }
     },
 
@@ -42,14 +43,19 @@ Object.defineProperties(V3f.UIElements.Display.prototype, {
         set: function(value){
             if(value){
                 this.domParent = this.domElement.parentNode;
-                this.domIndex = Array.prototype.slice.call(this.domParent.children).indexOf(this.domElement);
+                if(this.domParent.children.length > 0)
+                    this.domIndex = Array.prototype.slice.call(this.domParent.children).indexOf(this.domElement);
 
                 this.domElement.classList.add('UIDisplayFull');
                 document.body.appendChild(this.domElement);
+                console.log(this);
             }
             else{
                 this.domElement.classList.remove('UIDisplayFull');
-                this.domParent.children[this.domIndex].insertAdjacentElement('beforebegin', this.domElement);
+                if(this.domParent.children.length > 0)
+                    this.domParent.children[this.domIndex].insertAdjacentElement('beforebegin', this.domElement);
+                else
+                    this.domParent.appendChild(this.domElement);
             }
         }
     }

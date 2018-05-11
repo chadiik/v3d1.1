@@ -31,7 +31,13 @@ V3f.Smart.PointLight = function(light, label){
         'far'
     ]));
 
-    this.Config('PointLight', this, this.OnGuiChanged.bind(this), ...track);
+    var shadowMapSizes = {'256': 256, '512': 512, '1024': 1024, '2048': 2048, '4096': 4096};
+    track.push(
+        new c('shadowMapSize', shadowMapSizes)
+    );
+
+    var folder = this.Config('PointLight', this, this.OnGuiChanged.bind(this), ...track);
+    folder.open();
 };
 
 V3f.Smart.PointLight.prototype = Object.assign(Object.create(V3f.Smart.Light.prototype), {
@@ -50,5 +56,25 @@ V3f.Smart.PointLight.prototype = Object.assign(Object.create(V3f.Smart.Light.pro
     Show: function(){
         
         V3f.Smart.Light.prototype.Show.call(this);
+    }
+});
+
+Object.defineProperties(V3f.Smart.PointLight.prototype, {
+
+    shadowMapSize: {
+        get: function(){
+            var shadowMapSize = this.target.shadowMapSize;
+            if(shadowMapSize === undefined){
+                var shadow = this.target.lightObject.shadow;
+                shadowMapSize = shadow.mapSize.y;
+            }
+            
+            return shadowMapSize;
+        },
+
+        set: function(value){
+            value = parseFloat(value);
+            this.target.SetShadowMapSize(value);
+        }
     }
 });

@@ -38,6 +38,10 @@ Object.assign(V3f.Project.Imported.prototype, {
             },
 
             function(){
+                scope.Rename();
+            },
+
+            function(){
                 onCompleted(scope.items);
             }
         );
@@ -82,9 +86,69 @@ Object.assign(V3f.Project.Imported.prototype, {
     Convert: function(){
         console.log('Convert');
         this.items.forEach(item => {
-            var obj = item.target;
+            var obj = item.obj;
             V3f.Project.Imported.Convert(obj);
         });
+    },
+
+    Rename: function(){
+        console.log('Rename');
+        this.items.forEach(item => {
+            var sovStr = item.sov.ToString();
+            var obj = item.obj;
+
+            // add extra identifier by sorted attribute length
+            var extraIDArray = [];
+            Cik.Utils3D.Traverse(obj, function(child, level){
+                if(child instanceof THREE.Mesh){
+                    var attrLength = child.geometry.attributes.position.count;
+
+                    extraIDArray.push({uuid: child.uuid, attrLength: attrLength});
+                }
+            });
+            extraIDArray.sort((a, b) => {
+                return a.attrLength > b.attrLength;
+            });
+            var extraID = {};
+            for(var i = 0; i < extraIDArray.length; i++){
+                var ex = extraIDArray[i];
+                extraID[ex.uuid] = i.toString();
+            }
+            
+            // set name and hid
+            Cik.Utils3D.Traverse(obj, function(child, level){
+                var add = '-' + extraID[child.uuid] + '_';
+                if(child instanceof THREE.Mesh) add += child.material.name;
+                if(child.children.length > 0) add += 'c' + child.children.length + '_';
+                add += level;
+                child.name = sovStr + add;
+                child.hid = child.name;
+            });
+
+            obj.name = sovStr;
+            obj.hid = obj.name;
+        });
+
+        // Validate
+        var collisions = 0;
+        for(var i = 0, numItems = this.items.length; i < numItems; i++){
+            var obj = this.items[i].obj;
+            for(var j = 0; j < numItems; j++){
+                var obj2 = this.items[j].obj;
+                obj.traverse(function(child){
+                    var hidc = child.hid;
+                    obj2.traverse(function(child2){
+                        if(child.uuid !== child2.uuid){
+                            var hidc2 = child2.hid;
+                            if(hidc === hidc2) collisions++;
+                        }
+                    });
+                });
+            };
+        };
+
+        if(collisions === 0) console.log('Items hid validated');
+        else console.warn('Found', collisions, 'collision in hid');
     }
 
 });
@@ -134,7 +198,6 @@ Object.assign(V3f.Project.Imported, {
                         snapshot.applyMatrix(child.matrixWorld);
 
                         var sovMesh = new THREE.Mesh(snapshot, child.material);
-                        sovMesh.name += '_' + item.target.name;
                         try{
                             item.AppendMesh(sovMesh);
                         }
@@ -155,10 +218,11 @@ Object.assign(V3f.Project.Imported, {
 
         view.traverse(function(child){
             if(child instanceof THREE.Mesh){
-                child.castShadow = child.receiveShadow = true;
+                //child.castShadow = child.receiveShadow = true;
 
                 var material = child.material;
                 V3f.Project.Imported.ConvertMaterial(material);
+                material.needsUpdate = true;
             }
         });
     },

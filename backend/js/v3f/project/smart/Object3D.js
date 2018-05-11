@@ -6,7 +6,8 @@ V3f.Smart.Object3D = function(object, label){
 
     if(object.asset){
         var assetConfig = object.asset.GetSmartParams();
-        this.Config(...assetConfig);
+        var assetFolder = this.Config(...assetConfig);
+        assetFolder.open();
     }
 
     function onShadowChange(){
@@ -22,7 +23,7 @@ V3f.Smart.Object3D = function(object, label){
     };
 
     var c = Cik.Config.Controller; //(property, min, max, step, onChange)
-    this.Config('Object3D', this, this.OnGuiChanged.bind(this), 
+    this.object3DFolder = this.Config('Object3D', this, this.OnGuiChanged.bind(this), 
         'Back', 
         'ConfigParent', 
         new c('ConfigChild', childrenNames),
@@ -30,6 +31,7 @@ V3f.Smart.Object3D = function(object, label){
         new c('castShadow', undefined, undefined, undefined, onShadowChange), 
         new c('receiveShadow', undefined, undefined, undefined, onShadowChange)
     );
+    this.object3DFolder.open();
 };
 
 V3f.Smart.Object3D.prototype = Object.assign(Object.create(V3f.Smart.prototype), {

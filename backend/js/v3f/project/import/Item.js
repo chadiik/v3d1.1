@@ -10,7 +10,6 @@ Object.assign(V3f.Project.Imported.Item.prototype, {
     AppendMesh: function(mesh){
         if(this.obj === undefined){
             this.obj = new THREE.Object3D();
-            this.obj.name = this.sov.ToString();
             this.materialsMap = {};
 
             this.creationLog = {

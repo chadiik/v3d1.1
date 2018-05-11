@@ -10891,7 +10891,7 @@
 
 					} else {
 
-						console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv ', i );
+						//console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv ', i ); chadiik
 
 						this.uvs.push( new Vector2(), new Vector2(), new Vector2() );
 
@@ -10909,7 +10909,7 @@
 
 					} else {
 
-						console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv2 ', i );
+						//console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv2 ', i ); chadiik
 
 						this.uvs2.push( new Vector2(), new Vector2(), new Vector2() );
 
@@ -21096,7 +21096,7 @@
 
 	function WebGLRenderer( parameters ) {
 
-		console.log( 'THREE.WebGLRenderer', REVISION );
+		//console.log( 'THREE.WebGLRenderer', REVISION ); chadiik
 
 		parameters = parameters || {};
 
@@ -21411,6 +21411,7 @@
 			_canvas.width = width * _pixelRatio;
 			_canvas.height = height * _pixelRatio;
 
+			updateStyle = false; // chadiik
 			if ( updateStyle !== false ) {
 
 				_canvas.style.width = width + 'px';
@@ -23607,7 +23608,7 @@
 
 			}
 
-			if( renderTarget.isWebGLRenderTargetCube ) {
+			if( renderTarget.isWebGLRenderTargetCube ) { // chadiik
 
 				if( cubeCallback === undefined ) {
 

@@ -30,7 +30,8 @@ V3f.Smart.Light = function(light, label){
     ]);
     
     track.push('DebugLight', 'Delete');
-    this.Config('Light', this, this.OnGuiChanged.bind(this), ...track);
+    var folder = this.Config('Light', this, this.OnGuiChanged.bind(this), ...track);
+    folder.open();
 };
 
 V3f.Smart.Light.prototype = Object.assign(Object.create(V3f.Smart.prototype), {

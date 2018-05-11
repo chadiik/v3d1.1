@@ -3,8 +3,26 @@ V3f.Smart.StandardMaterialConfig = function(material, mesh){
     
     V3f.Smart.MaterialConfig.call(this, material, mesh);
 
+    this.vertexColor = new THREE.Color(0, 0, 0);
+    this.color = this.material.color.clone();
     var c = Cik.Config.Controller;
-    this.keys.push(new c('material.metalness', -1, 1, .05));
+    var p = V3f.Smart.StandardMaterialConfig.materialProperties;
+    var scope = this;
+    this.keys.push(
+        new c('color', undefined, undefined, undefined, function(){
+            scope.material.color.r = this.color.r / 255;
+            scope.material.color.g = this.color.g / 255;
+            scope.material.color.b = this.color.b / 255;
+        }),
+        p.bumpScale,
+        p.metalness,
+        p.roughness,
+        p.wireframe,
+        'SetCubeCamEnv',
+        new c('vertexColor', undefined, undefined, undefined, function(){
+            this.UseVertexColor(this.vertexColor.r / 255, this.vertexColor.g / 255, this.vertexColor.b / 255);
+        })
+    );
 
     this.disabledTextures = {};
     this.displayedMapsEvents = [];
@@ -35,12 +53,24 @@ V3f.Smart.StandardMaterialConfig.prototype = Object.assign(Object.create(V3f.Sma
     Exit: function(){
         V3f.Smart.MaterialConfig.prototype.Exit.call(this);
 
+        if(this.selectingCubeCamera){
+            var scope = this;
+            Cik.Input.DelayedAction(function(){
+                console.log(V3f.Smart.CubeCamera);
+                var smartCubeCamera = V3f.Smart.CubeCamera.active;
+                if(smartCubeCamera){
+                    scope.SetCubeCamEnv(smartCubeCamera.target);
+                }
+                scope.selectingCubeCamera = false;
+            }, 500);
+        }
+
         this.HideMaps();
     },
 
     DisplayMaps: function(){
         var keys = Object.keys(this.material);
-        keys.push(...Object.keys(this.disabledTextures));
+        //keys.push(...Object.keys(this.disabledTextures));
         //keys.sort();
 
         var scope = this;
@@ -51,7 +81,7 @@ V3f.Smart.StandardMaterialConfig.prototype = Object.assign(Object.create(V3f.Sma
             if(V3f.Smart.StandardMaterialConfig.IsMapKey(key)){
                 var src = 'ressources/NullImage.jpg';
                 var label = key;
-                textureExists = property instanceof THREE.Texture;
+                textureExists = (property instanceof THREE.Texture) && !property.isCubeTexture;
                 if(textureExists){
                     var image = property.image;
                     if(image){
@@ -122,7 +152,7 @@ V3f.Smart.StandardMaterialConfig.prototype = Object.assign(Object.create(V3f.Sma
             }
         }
         else{
-            //this.disabledTextures[key] = texture;
+            this.disabledTextures[key] = texture;
             this.material[key] = null;
         }
 
@@ -132,6 +162,47 @@ V3f.Smart.StandardMaterialConfig.prototype = Object.assign(Object.create(V3f.Sma
 
     CopyTexture: function(key){
         console.log(key);
+    },
+
+    SetCubeCamEnv: function(cubeCameraController){
+        if(cubeCameraController === undefined){ // gui call
+            this.selectingCubeCamera = true;
+            return;
+        }
+
+        this.material.userData.cubeCameraID = cubeCameraController.id;
+        this.material.envMap = cubeCameraController.cubeTexture;
+        this.material.needsUpdate = true;
+    },
+
+    UseVertexColor: function(r, g, b){
+
+        var geometry = this.mesh.geometry;
+        var colorAttribute = geometry.attributes.color;
+        if(colorAttribute === undefined){
+            var positionAttribute = geometry.attributes.position;
+            var size = positionAttribute.count * 3;
+            geometry.addAttribute('color', new THREE.Float32BufferAttribute(size, 3));
+            colorAttribute = geometry.attributes.color;
+        }
+
+        var disableCeil = .9;
+        if(r > disableCeil && g > disableCeil && b > disableCeil){
+            geometry.removeAttribute('color');
+            this.material.vertexColors = THREE.NoColors;
+            return;
+        }
+        
+        colorAttribute.needsUpdate = true;
+        var colors = colorAttribute.array;
+
+        for(var i = 0, numColors = colorAttribute.count; i < numColors; i++){
+            colors[i * 3] = r;
+            colors[i * 3 + 1] = g;
+            colors[i * 3 + 2] = b;
+        }
+
+        this.material.vertexColors = THREE.VertexColors;
     },
 
     HideMaps: function(){
@@ -165,5 +236,19 @@ Object.assign(V3f.Smart.StandardMaterialConfig, {
             if(key === this.mapKeys[i]) return true;
         };
         return false;
-    }
+    },
+
+    materialProperties: (function(){
+        var c = Cik.Config.Controller;
+        return {
+
+            bumpScale: new c('material.bumpScale', -10, 10, .05),
+            metalness: new c('material.metalness', -1, 1, .05),
+            roughness: new c('material.roughness', -1, 2, .05),
+            wireframe: 'material.wireframe',
+            displacementScale: new c('material.displacementScale', -10, 10, .05),
+            normalX: new c('material.normalScale.x', -1, 1, .05),
+            normalY: new c('material.normalScale.y', -1, 1, .05),
+        };
+    })()
 });

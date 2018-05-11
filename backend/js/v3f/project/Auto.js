@@ -28,7 +28,7 @@ V3f.Auto = {
     },
 
     smartGroupCount: 0,
-    MakeSmart: function(meshes){
+    MakeSmart: function(meshes, stateLabel){
 
         var smartMeshes = [];
         meshes.forEach(mesh => {
@@ -39,6 +39,11 @@ V3f.Auto = {
 
         var smartRaycastGroup = new Cik.Input.RaycastGroup(smartMeshes, 
             function(smartMesh){
+                if(stateLabel !== undefined){
+                    var state = V3d.Loop.activeLoop.activeState;
+                    if(state.label !== stateLabel) return;
+                }
+
                 smartMesh.Show();
                 if(Cik.Input.keys['ctrl']){
                     if(smartMesh.target.asset !== undefined) smartMesh.target.asset.Smart();
@@ -81,7 +86,8 @@ V3f.Auto = {
     },
 
     SmartDisplay: function(objects, sceneController){
-        if(sceneController === undefined) sceneController = V3d.Loop.GetActiveSceneController();
+        var state = V3d.Loop.activeLoop.activeState;
+        if(sceneController === undefined) sceneController = state.sceneController;
         
         var row = V3f.Auto.DisplayRow(objects);
         sceneController.Add(row);
@@ -95,6 +101,6 @@ V3f.Auto = {
             });
         });
 
-        V3f.Auto.MakeSmart(meshes);
+        V3f.Auto.MakeSmart(meshes, state.label);
     }
 };

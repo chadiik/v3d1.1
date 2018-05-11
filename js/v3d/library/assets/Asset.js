@@ -57,6 +57,14 @@ Object.assign(V3d.Library.Asset, {
     ViewFromJSON: function(data){
         var view = V3d.Library.loader.parse(data);
         this.RecoverTextures(view);
+        this.RecoverHID(view);
         return view;
+    },
+
+    RecoverHID: function(view){
+        view.traverse(function(child){
+            child.hid = child.name;
+        });
+        view.hid = view.name;
     }
 });

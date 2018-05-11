@@ -12,6 +12,14 @@ V3f.Control3D = function(camera, domElement){
 
 Object.assign(V3f.Control3D.prototype, {
 
+    Hide: function(){
+        this.control.visible = false;
+    },
+
+    Show: function(){
+        this.control.visible = true;
+    },
+
     Attach: function(target){
         var camera = V3d.Loop.GetActiveCamera();
         if(camera !== this.camera){

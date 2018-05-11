@@ -22,39 +22,69 @@ V3d.Scene.Renderer = function(params){
     this.renderer.setPixelRatio(this.pixelRatio);
     this.renderer.setClearColor(new THREE.Color(this.params.clearColor), 1);
 
-    this.renderNode = this.renderer;
-};
-
-Object.assign(V3d.Scene.Renderer.prototype, {
-
-    UseCamera: function(camera){
+    this.UseCamera = function(camera){
         this.camera = camera;
-    },
+    };
 
-    UpdateShadowMaps: function(){
-        this.renderer.shadowMap.needsUpdate = true;
-    },
-
-    ResizeRenderer: function(screen){
+    this.ResizeRenderer = function(screen){
         var newWidth = screen.width * this.params.renderSizeMul;
         var newHeight = screen.height * this.params.renderSizeMul;
         this.renderer.setSize(newWidth, newHeight);
-    },
+    };
 
-    ResizeDomElement: function(screen){
+    this.Render = function(scene){
+        this.renderer.render(scene, this.camera);
+    };
+    
+    this.UpdateShadowMaps = function(){
+        this.renderer.shadowMap.needsUpdate = true;
+    };
+
+    this.ResizeDomElement = function(screen){
         this.renderer.domElement.style.width = screen.width + 'px';
 		this.renderer.domElement.style.height = screen.height + 'px';
-    },
+    };
 
-    ReconfigureViewport: function(screen){
+    this.ReconfigureViewport = function(screen){
         this.camera.aspect = screen.width / screen.height;
         this.camera.updateProjectionMatrix();
 
         this.ResizeRenderer(screen);
         this.ResizeDomElement(screen);
-    },
+    };
 
-    Render: function(scene){
-        if(this.renderNode === this.renderer) this.renderer.render(scene, this.camera);
+    if(this.params.composer){
+        V3d.Scene.Renderer.UseComposer(this);
     }
-});
+};
+
+Object.assign(V3d.Scene.Renderer, {
+    
+    UseComposer: function(sceneRenderer){
+        sceneRenderer.composer = new THREE.EffectComposer(sceneRenderer.renderer);
+        sceneRenderer.renderPass = new THREE.RenderPass(undefined, undefined);
+        sceneRenderer.renderPass.renderToScreen = true;
+        sceneRenderer.composer.addPass(sceneRenderer.renderPass);
+        sceneRenderer.renderPasses = [sceneRenderer.renderPass];
+
+        sceneRenderer.UseCamera = function(camera){
+            sceneRenderer.camera = camera;
+            sceneRenderer.renderPass.camera = camera;
+        };
+
+        sceneRenderer.ResizeRenderer = function(screen){
+            var newWidth = screen.width * sceneRenderer.params.renderSizeMul;
+            var newHeight = screen.height * sceneRenderer.params.renderSizeMul;
+            sceneRenderer.renderer.setSize(newWidth, newHeight);
+
+            newWidth  = Math.floor( newWidth / sceneRenderer.pixelRatio ) || 1;
+			newHeight = Math.floor( newWidth / sceneRenderer.pixelRatio ) || 1;
+			sceneRenderer.composer.setSize( newWidth, newHeight );
+        };
+
+        sceneRenderer.Render = function(scene){
+            sceneRenderer.renderPass.scene = scene;
+            sceneRenderer.composer.render();
+        }
+    }
+})

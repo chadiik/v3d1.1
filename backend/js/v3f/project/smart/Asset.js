@@ -6,11 +6,14 @@ V3f.Smart.Asset = function(object, label){
 
     var c = Cik.Config.Controller; //(property, min, max, step, onChange)
     var track = [
-        'Revert',
+        'ToggleChanges',
         'ConfigView',
         'Log'
     ];
-    this.Config('Asset', this, this.OnGuiChanged.bind(this), ...track);
+    var folder = this.Config('Asset', this, this.OnGuiChanged.bind(this), ...track);
+    folder.open();
+
+    this.toggleOriginal = true;
 };
 
 V3f.Smart.Asset.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
@@ -20,9 +23,14 @@ V3f.Smart.Asset.prototype = Object.assign(Object.create(V3f.Smart.prototype), {
 
     },
 
-    Revert: function(){
+    ToggleChanges: function(){
         if(this.target.config){
-            this.target.config.Load();
+            if(this.toggleOriginal){
+                this.target.config.Save('1');
+            }
+            this.target.config.Load(this.toggleOriginal ? '0' : '1');
+
+            this.toggleOriginal = !this.toggleOriginal;
         }
     },
 

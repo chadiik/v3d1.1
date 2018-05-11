@@ -13,20 +13,23 @@ Object.assign(V3d.Loop.prototype, {
     //Switch(label, sceneController, sceneRenderer, cameraController, {updateInput: true, updateStats: true})
     Switch: function(label, sceneController, sceneRenderer, cameraController, params){
         
+        var existing = this.states[label];
+
         if(this.activeState !== undefined){
+            if(this.activeState === existing) return;
             this.previousStateLabel = this.activeState.label;
             this.activeState.cameraController.Hold();
         }
 
         var state;
-        var existing = this.states[label];
-        if(existing !== undefined && this.activeState !== existing){
+        if(existing !== undefined){
             state = existing;
         }
         else{
             if(label === undefined) label = Object.keys(this.states).length;
             if(sceneRenderer === undefined) sceneRenderer = V3d.Loop.values.sceneRenderer;
             if(cameraController === undefined) cameraController = V3d.Loop.values.cameraController;
+            if(sceneController === undefined) console.warn(label, ': sceneController not defined');
 
             state = new V3d.Loop.State(label, sceneController, sceneRenderer, cameraController, params);
             this.states[label] = state;
